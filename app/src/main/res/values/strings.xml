@@ -1,0 +1,144 @@
+<resources>
+    <string name="app_name">Simples</string>
+    <string name="facebook_app_id">1481291165504641</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_firstname">Primeiro Nome</string>
+    <string name="prompt_lastname">Último Nome</string>
+    <string name="prompt_password">Palavra chaves</string>
+    <string name="prompt_mobile">Telemóvel</string>
+    <string name="prompt_birth_date">Data de nascimento</string>
+    <string name="prompt_female">Mulher</string>
+    <string name="prompt_male">Homem</string>
+    <string name="prompt_address">Morada</string>
+    <string name="prompt_postal_address">Código postal</string>
+    <string name="prompt_parish">Freguesia</string>
+    <string name="action_request_card">Pedir cartão</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_sign_in">Login</string>
+
+    <!-- Strings related to main -->
+    <string name="action_settings">Settings</string>
+    <string name="action_logout">Terminar sessão</string>
+    <string name="partners">Parceiros</string>
+    <string name="card">Cartão</string>
+    <string name="preferences">Preferências</string>
+    <string name="user_name">%1$s %2$s</string>
+
+    <!--Server error messages-->
+    <string name="facebook_error">Houve um erro com a sessão do facebook</string>
+    <string name="server_error">Algo correu mal, por favor tente mais tarde!</string>
+
+    <!--Error codes-->
+    <string name="rc_1">RC 1:</string>
+    <string name="rc_2">RC 2:</string>
+    <string name="rc_3">RC 3:</string>
+    <string name="rc_4">RC 4:</string>
+    <string name="rc_5">RC 5:</string>
+
+    <!--Validation strings-->
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+
+    <!--Permission strings-->
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+    <!--Navigation strings-->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!--Strings for screen titles-->
+    <string name="title_activity_login">Iniciar sessão</string>
+    <string name="title_activity_main">Simples</string>
+    <string name="title_activity_request_card">Pedir cartão</string>
+    <string name="title_activity_first_time">Simples</string>
+
+    <!--Categories-->
+
+    <!--Categories-->
+    <string-array name="categories">
+        <item>Todas as categorias</item>
+        <item>Restaurantes</item>
+        <item>Retalho alimentar</item>
+        <item>Enternimento e Lazer</item>
+        <item>Motores</item>
+        <item>Comercio e Serviços</item>
+        <item>Educação e Ensino</item>
+        <item>Saúde e Bem-Estar</item>
+        <item>Hotéis e Turismo</item>
+        <item>Moda</item>
+        <item>Desporto</item>
+        <item>Casa e Decorações</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_preferences">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+    <string name="pref_title_vibrate">Vibrate</string>
+
+    <!-- Font Awesome-->
+    <string name="icon_home">&#xf015;</string>
+    <string name="icon_phone">&#xf095;</string>
+
+    <!--Categories-->
+    <string name="restaurantes">seo:restaurantes</string>
+</resources>

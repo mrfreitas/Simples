@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/card"
+            android:checked="true"
+            android:icon="@drawable/ic_credit_card_grey600_24dp"
+            android:title="@string/card" />
+        <item
+            android:id="@+id/partners"
+            android:checked="true"
+            android:icon="@drawable/ic_store_grey600_24dp"
+            android:title="@string/partners" />
+        <item
+            android:id="@+id/preferences"
+            android:icon="@drawable/ic_check_circle_grey600_24dp"
+            android:title="@string/preferences" />
+    </group>
+
+<!--    <item android:title="Opções">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Send" />
+        </menu>
+    </item>-->
+
+</menu>
