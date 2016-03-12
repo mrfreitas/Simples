@@ -47,4 +47,7 @@ public interface UserAPI {
 
     @POST("/login/out")
     void logOut(@Query("token") String token, Callback<JsonObject> response);
+
+    @POST("/login/auth")
+    void loginAuth(@Query("user") String user, @Query("pass") String pass, Callback<JsonObject> response);
 }
