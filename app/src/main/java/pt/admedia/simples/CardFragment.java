@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import com.squareup.picasso.Picasso;
@@ -30,6 +31,7 @@ import pt.admedia.simples.lib.SimplesPrefs;
 public class CardFragment extends Fragment {
 
     ImageView cardImage;
+    ProgressBar cardProgress;
     // Custom target for the picasso image loader
     private Target target = new Target() {
         @Override
@@ -50,8 +52,10 @@ public class CardFragment extends Fragment {
                     fos.flush();
                     fos.close();
                 }
-                if(f.exists())
+                if(f.exists()) {
                     cardImage.setImageBitmap(BitmapFactory.decodeFile(f.getPath()));
+                    cardProgress.setVisibility(View.GONE);
+                }
             }
             catch (IOException e) {}
         }
@@ -87,16 +91,19 @@ public class CardFragment extends Fragment {
         Session session = new Session(getContext());
         String token = session.getToken();
         cardImage = (ImageView) getActivity().findViewById(R.id.card_image);
+        cardProgress = (ProgressBar) getActivity().findViewById(R.id.card_progress);
         Spinner categories = (Spinner) getActivity().findViewById(R.id.categories);
         categories.setVisibility(View.GONE);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.card);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
+        cardProgress.setVisibility(View.VISIBLE);
         //Photo
         File f = new File(getContext().getCacheDir(), SimplesPrefs.CARD_NAME.toString());
-        if (f.exists())
+        if (f.exists()) {
             cardImage.setImageBitmap(BitmapFactory.decodeFile(f.getPath()));
+            cardProgress.setVisibility(View.GONE);
+        }
         else {
             Picasso.with(getContext()).load(BaseURL.CARD_IMG + token).rotate(90).into(target);
         }
