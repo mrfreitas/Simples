@@ -39,6 +39,8 @@ import pt.admedia.simples.api.BaseURL;
 import pt.admedia.simples.api.SimplesBaseAPI;
 import pt.admedia.simples.api.UserAPI;
 import pt.admedia.simples.lib.Session;
+import pt.admedia.simples.model.My_Realm;
+import pt.admedia.simples.model.UserEntity;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -307,6 +309,9 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 Session session = new Session(Login.this);
                 if (jsonResponse.has("token"))
                     session.setToken(jsonResponse.get("token").getAsString());
+                // Persist user
+                My_Realm my_realm = new My_Realm(Login.this);
+                my_realm.setUser(new UserEntity(jsonResponse));
                 startMainActivity();
             }
 

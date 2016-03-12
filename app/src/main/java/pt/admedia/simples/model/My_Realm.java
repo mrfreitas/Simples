@@ -11,12 +11,10 @@ import io.realm.RealmResults;
  */
 public class My_Realm {
 
-    private Context context;
     private Realm realm;
 
     public My_Realm(Context context) {
-        this.context = context;
-        this.realm = Realm.getInstance(this.context);
+        this.realm = Realm.getInstance(context);
     }
 
     public void setUser(UserEntity userEntity)
