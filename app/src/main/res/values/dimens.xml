@@ -45,7 +45,7 @@
     <dimen name="padding_15">10dp</dimen>
 
     <dimen name="margin_create_user">15dp</dimen>
-    <dimen name="discounts_text">7sp</dimen>
+    <dimen name="discounts_text">6sp</dimen>
     <dimen name="carouselProgressBar">50dp</dimen>
     <dimen name="carouselNoContent">120dp</dimen>
     <dimen name="scopeString">18sp</dimen>
