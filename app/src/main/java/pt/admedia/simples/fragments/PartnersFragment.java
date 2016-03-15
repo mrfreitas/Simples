@@ -1,7 +1,6 @@
-package pt.admedia.simples;
+package pt.admedia.simples.fragments;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -10,10 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
@@ -22,6 +19,8 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
+import pt.admedia.simples.R;
+import pt.admedia.simples.adapters.MyRecyclerListAdapter;
 import pt.admedia.simples.api.BaseURL;
 import pt.admedia.simples.api.PartnersAPI;
 import pt.admedia.simples.model.PartnersEntity;
@@ -37,8 +36,9 @@ public class PartnersFragment extends Fragment {
     private ArrayList<PartnersEntity> partnersList = new ArrayList<PartnersEntity>();
     private RecyclerView react_list;
     private ProgressBar partnersPbar;
-    private Typeface fontAwesome;
     private String filter;
+    private String ARG_PARTNERS = "ARG_PARTNERS";
+
     public PartnersFragment() {
         // Required empty public constructor
     }
@@ -53,6 +53,7 @@ public class PartnersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_partners, container, false);
     }
 
@@ -66,8 +67,6 @@ public class PartnersFragment extends Fragment {
         categories.setVisibility(View.GONE);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.partners);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
-
-        fontAwesome = Typeface.createFromAsset(getActivity().getAssets(), "fontawesome-webfont.ttf");
 
         partnersPbar = (ProgressBar) getActivity().findViewById(R.id.partnersPbar);
         react_list = (RecyclerView) getActivity().findViewById(R.id.partners_list);
@@ -122,7 +121,7 @@ public class PartnersFragment extends Fragment {
                     partnersList.add(partner);
                 }
                 // Initialize recycler view
-                myListAdapter = new MyRecyclerListAdapter(getActivity().getApplicationContext(), partnersList, R.layout.t_card, fontAwesome);
+                myListAdapter = new MyRecyclerListAdapter(getActivity().getApplicationContext(), partnersList, R.layout.t_card);
                 //    myListAdapter.clearData();
                 react_list.setLayoutManager(new LinearLayoutManager(getContext()));
                 react_list.setAdapter(myListAdapter);

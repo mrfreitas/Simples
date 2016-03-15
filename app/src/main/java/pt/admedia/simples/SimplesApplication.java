@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.graphics.Typeface;
 import android.util.Base64;
 import android.util.Log;
 
@@ -19,11 +20,20 @@ import io.realm.exceptions.RealmMigrationNeededException;
  */
 public class SimplesApplication extends Application {
 
+    public static boolean isTablet = false;
+    public static Typeface fontAwesome;
+
     @Override
     public void onCreate() {
         super.onCreate();
+
         printHasKey();
         buildDatabase();
+
+        //access all over the app to know the device context it's running (tablet vs phone)
+        isTablet = getResources().getBoolean(R.bool.isTablet);
+
+        fontAwesome = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
     }
 
     public void printHasKey(){

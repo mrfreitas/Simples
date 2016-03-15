@@ -33,6 +33,9 @@ import java.io.File;
 
 import pt.admedia.simples.api.BaseURL;
 import pt.admedia.simples.api.UserAPI;
+import pt.admedia.simples.fragments.CardFragment;
+import pt.admedia.simples.fragments.PartnersFragment;
+import pt.admedia.simples.fragments.PreferencesFragment;
 import pt.admedia.simples.lib.Session;
 import pt.admedia.simples.lib.SimplesPrefs;
 import pt.admedia.simples.model.My_Realm;

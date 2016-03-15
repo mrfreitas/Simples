@@ -4,8 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -13,7 +11,7 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by mrfreitas on 11/03/2016.
  */
-public class PartnersEntity extends RealmObject {
+public class PartnersEntity extends RealmObject{
 
     @PrimaryKey
     private String niu;

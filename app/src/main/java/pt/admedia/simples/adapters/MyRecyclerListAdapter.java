@@ -1,7 +1,6 @@
-package pt.admedia.simples;
+package pt.admedia.simples.adapters;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +16,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import io.realm.RealmList;
+import pt.admedia.simples.R;
+import pt.admedia.simples.SimplesApplication;
 import pt.admedia.simples.api.BaseURL;
 import pt.admedia.simples.model.Discount;
 import pt.admedia.simples.model.PartnersEntity;
@@ -30,7 +31,6 @@ public class MyRecyclerListAdapter extends RecyclerView.Adapter<MyRecyclerListAd
     private Context mContext;
     private int resLayout;
     private LayoutInflater inflater;
-    private Typeface fontAwesome;
     private String partnerImgBaseUrl;
     private float textSize;
     private LinearLayout.LayoutParams discountTvParams;
@@ -38,13 +38,12 @@ public class MyRecyclerListAdapter extends RecyclerView.Adapter<MyRecyclerListAd
 
 
 
-    public MyRecyclerListAdapter(Context mContext, ArrayList items, int textViewResourceId, Typeface fontAwesome) {
+    public MyRecyclerListAdapter(Context mContext, ArrayList items, int textViewResourceId) {
 
         this.mContext = mContext;
         this.elements = items;
         this.resLayout = textViewResourceId;
         inflater = LayoutInflater.from(mContext);
-        this.fontAwesome = fontAwesome;
         partnerImgBaseUrl = BaseURL.PARTNERS_IMG.toString();
         // Discounts text initialization
         textSize = mContext.getResources().getDimension(R.dimen.discounts_text);
@@ -69,8 +68,8 @@ public class MyRecyclerListAdapter extends RecyclerView.Adapter<MyRecyclerListAd
             holder.contact.setText(Integer.toString(partner.getPhone()));
 
             // Font awesome
-            holder.locationIcon.setTypeface(fontAwesome);
-            holder.contactIcon.setTypeface(fontAwesome);
+            holder.locationIcon.setTypeface(SimplesApplication.fontAwesome);
+            holder.contactIcon.setTypeface(SimplesApplication.fontAwesome);
 //            holder.descriptionTxt.setText(partner.);
 
             Picasso.with(mContext)

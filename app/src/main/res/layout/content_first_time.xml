@@ -67,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Esqueceu a palavra chaves?"
+            android:text="Esqueceu a palavra passe?"
             android:gravity="center"
             android:id="@+id/forgot_pass"
             android:layout_below="@+id/Frame_face_login_button"
