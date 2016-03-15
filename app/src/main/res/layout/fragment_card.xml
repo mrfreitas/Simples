@@ -15,7 +15,6 @@
             android:layout_margin="10dp"
             android:layout_height="wrap_content"
             android:id="@+id/test"
-            android:src="@drawable/mf"
             card_view:cardCornerRadius="8dp"
             android:layout_gravity="center">
             <ImageView

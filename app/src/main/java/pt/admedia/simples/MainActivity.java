@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void firstTime() {
+        Log.i("TOKEN", session.getToken());
         if (session.getToken().equals("")) {
             Intent firstTime = new Intent(this, FirstTime.class);
             firstTime.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
