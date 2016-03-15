@@ -5,28 +5,14 @@
     <color name="colorAccent">#FF4081</color>
     <color name="white">#ffffff</color>
     <color name="btn_login">#FFED2348</color>
+    <color name="btn_login_pressed">#ed5874</color>
     <color name="text_hint">#FF737373</color>
-
-    <color name="main">#6A9B9B</color>
-    <color name="main_button_dark">#ff578787</color>
-    <color name="main_button_darker">#ff4c7878</color>
-    <color name="btn_login_dark">#ff65aaaa</color>
-    <color name="accent">#009688</color>
-    <color name="main_dark">#ff518383</color>
+    <color name="face_btn">#416BC1</color>
+    <color name="face_btn_pressed">#6181c2</color>
 
     <color name="notification">#fff64a3a</color>
 
 
-    <color name="red_react">#7d7d99</color>
-    <color name="red_react_dark">#656581</color>
-    <!-- <color name="red_react">#D13F31</color>
-    <color name="red_react_dark">#ffb94031</color> -->
-    <color name="dash_elem_click">#40ffffff</color>
-    <color name="card_elem_click">#85e1e1e1</color>
-    <color name="blue_organize">#4E7999</color>
-    <color name="blue_organize_dark">#ff3f6281</color>
-    <color name="grey_trailblaze">#9D9D9D</color>
-    <color name="grey_trailblaze_dark">#ff858585</color>
     <color name="grey_1">#e7e7e7</color>
     <color name="divider">#ffdddddd</color>
     <color name="main_background">#ffe1e1e1</color>

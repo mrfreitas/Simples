@@ -1,9 +1,7 @@
 package pt.admedia.simples.model;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import io.realm.Realm;
 import io.realm.RealmObject;
 
 /**

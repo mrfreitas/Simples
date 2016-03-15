@@ -72,7 +72,7 @@ public class PreferencesFragment extends Fragment implements PreferencesAdapter.
         prefListSports.add(k);
 
 
-        PreferenceCategoryEntity a1 = new PreferenceCategoryEntity("a1","Restauração");
+        PreferenceCategoryEntity a1 = new PreferenceCategoryEntity("a1","Restaurantes");
         PreferenceCategoryEntity a2 = new PreferenceCategoryEntity("a2","Desporto");
         a1.setChildPreferences(prefList);
         a2.setChildPreferences(prefListSports);
@@ -97,32 +97,6 @@ public class PreferencesFragment extends Fragment implements PreferencesAdapter.
         categories.setVisibility(View.GONE);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
-
-//        restaurant_switch = (Switch) getActivity().findViewById(R.id.restaurant_switch);
-//        switch_peixe = (Switch) getActivity().findViewById(R.id.switch_peixe);
-//        switch_carnes = (Switch) getActivity().findViewById(R.id.switch_carnes);
-//        switch_portuguesa = (Switch) getActivity().findViewById(R.id.switch_portuguesa);
-//        switch_japones = (Switch) getActivity().findViewById(R.id.switch_japones);
-//        switch_chines = (Switch) getActivity().findViewById(R.id.switch_chines);
-//        switch_italiano = (Switch) getActivity().findViewById(R.id.switch_italiano);
-//        switch_indiano = (Switch) getActivity().findViewById(R.id.switch_indiano);
-//        switch_contemporanea = (Switch) getActivity().findViewById(R.id.switch_contemporanea);
-//        switch_fast = (Switch) getActivity().findViewById(R.id.switch_fast);
-//        switch_vegetariano = (Switch) getActivity().findViewById(R.id.switch_vegetariano);
-//        switch_petiscos = (Switch) getActivity().findViewById(R.id.switch_petiscos);
-//
-//        restaurant_switch.setOnCheckedChangeListener(this);
-//        switch_peixe.setOnCheckedChangeListener(this);
-//        switch_carnes.setOnCheckedChangeListener(this);
-//        switch_portuguesa.setOnCheckedChangeListener(this);
-//        switch_japones.setOnCheckedChangeListener(this);
-//        switch_chines.setOnCheckedChangeListener(this);
-//        switch_italiano.setOnCheckedChangeListener(this);
-//        switch_indiano.setOnCheckedChangeListener(this);
-//        switch_contemporanea.setOnCheckedChangeListener(this);
-//        switch_fast.setOnCheckedChangeListener(this);
-//        switch_vegetariano.setOnCheckedChangeListener(this);
-//        switch_petiscos.setOnCheckedChangeListener(this);
 
     }
 
@@ -150,26 +124,4 @@ public class PreferencesFragment extends Fragment implements PreferencesAdapter.
         // TODO: 13/03/2016 save on api
     }
 
-
-//    @Override
-//    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//        int id = buttonView.getId();
-//
-//        switch (id)
-//        {
-//            case R.id.restaurant_switch:
-//                switch_peixe.setChecked(isChecked);
-//                switch_carnes.setChecked(isChecked);
-//                switch_portuguesa.setChecked(isChecked);
-//                switch_japones.setChecked(isChecked);
-//                switch_chines.setChecked(isChecked);
-//                switch_italiano.setChecked(isChecked);
-//                switch_indiano.setChecked(isChecked);
-//                switch_contemporanea.setChecked(isChecked);
-//                switch_fast.setChecked(isChecked);
-//                switch_vegetariano.setChecked(isChecked);
-//                switch_petiscos.setChecked(isChecked);
-//                break;
-//        }
-//    }
 }

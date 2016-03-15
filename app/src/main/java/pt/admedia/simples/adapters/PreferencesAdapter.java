@@ -72,6 +72,28 @@ public class PreferencesAdapter extends RecyclerView.Adapter<PreferencesAdapter.
         onBind = false;
     }
 
+    @Override
+    public int getItemCount() {
+        return elements.size();
+    }
+
+    public interface PreferenceSelectionListener{
+        void onParentSelected(PreferenceCategoryEntity parent, boolean state);
+        void onChildSelected(PreferenceCategoryEntity parent, PreferenceEntity child, boolean state);
+    }
+
+    private PreferenceCategoryEntity getParentCategory(String childId){
+        for (Object ro : elements){
+            if(ro instanceof PreferenceCategoryEntity){
+                for (PreferenceEntity rochildren : ((PreferenceCategoryEntity)ro).getChildPreferences()){
+                    if(rochildren.getNiu().equals(childId))
+                        return ((PreferenceCategoryEntity)ro);
+                }
+            }
+        }
+        return null;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener {
 
         public TextView title;
@@ -100,27 +122,5 @@ public class PreferencesAdapter extends RecyclerView.Adapter<PreferencesAdapter.
                 }
             }
         }
-    }
-
-    @Override
-    public int getItemCount() {
-        return elements.size();
-    }
-
-    public interface PreferenceSelectionListener{
-        void onParentSelected(PreferenceCategoryEntity parent, boolean state);
-        void onChildSelected(PreferenceCategoryEntity parent, PreferenceEntity child, boolean state);
-    }
-
-    private PreferenceCategoryEntity getParentCategory(String childId){
-        for (Object ro : elements){
-            if(ro instanceof PreferenceCategoryEntity){
-                for (PreferenceEntity rochildren : ((PreferenceCategoryEntity)ro).getChildPreferences()){
-                    if(rochildren.getNiu().equals(childId))
-                        return ((PreferenceCategoryEntity)ro);
-                }
-            }
-        }
-        return null;
     }
 }

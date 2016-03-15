@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,12 +12,11 @@
 
     <!-- Login progress -->
     <ProgressBar
-        android:id="@+id/cardRequest_progress"
         style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/cardRequest_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
+        android:layout_centerInParent="true"/>
 
     <ScrollView
         android:id="@+id/login_form"
@@ -96,7 +95,6 @@
 
                 <EditText
                     android:id="@+id/birthDate"
-
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_birth_date"
@@ -117,6 +115,7 @@
                     style="@style/Base.TextAppearance.AppCompat.Medium"
                     android:text="@string/prompt_male"
                     android:textColor="@color/text_hint"
+
                     />
                 <RadioButton
                     android:id="@+id/female"
@@ -132,7 +131,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <AutoCompleteTextView
+                <EditText
                     android:id="@+id/address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -147,7 +146,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <AutoCompleteTextView
+                <EditText
                     android:id="@+id/postal_code"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -180,9 +179,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:background="@drawable/login_button"
                 android:text="@string/action_request_card"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+
+</RelativeLayout>

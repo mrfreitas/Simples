@@ -1,13 +1,11 @@
 package pt.admedia.simples;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
-import android.content.Context;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -17,7 +15,6 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +24,10 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.app.LoaderManager.LoaderCallbacks;
+import android.widget.RadioButton;
+import android.widget.Toast;
+
+import com.google.gson.JsonObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,27 +36,31 @@ import java.util.List;
 
 import pt.admedia.simples.api.BaseURL;
 import pt.admedia.simples.api.UserAPI;
-
-import pt.admedia.simples.lib.SimplesPrefs;
+import pt.admedia.simples.lib.Session;
+import pt.admedia.simples.model.My_Realm;
+import pt.admedia.simples.model.UserEntity;
+import pt.admedia.simples.validator.ValidatorFactory;
+import retrofit.Callback;
 import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
 
 public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cursor>
 {
-    private static final String PREFS = SimplesPrefs.PREFS.toString();
-    private SharedPreferences prf;
     private Button requestCard;
-    private EditText firstName, lastName, mobile, birthDate;
-    private AutoCompleteTextView email;
+    private EditText firstNameTv, lastNameTv, mobileTv, birthDateTv, addressTv, postalCodeTv, parishTv;
+    private AutoCompleteTextView emailTv;
     private Calendar myCalendar;
     private DatePickerDialog.OnDateSetListener date;
+    private ValidatorFactory validatorFactory;
+    private RadioButton genderMale, genderFemale;
+    private ProgressBar pBar;
 
     //Id to identity READ_CONTACTS permission request.
     private static final int REQUEST_READ_CONTACTS = 0;
-
-    private ProgressBar pBar;
     public static final String ENDPOINT = BaseURL.BASE_URL.toString();
     UserAPI api;
 
@@ -67,7 +71,7 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
         setContentView(R.layout.activity_request_card);
 
 
-        prf = getSharedPreferences(PREFS, 0);
+        validatorFactory = new ValidatorFactory(getApplicationContext());
         assignViews();
 
         // Birth date handler
@@ -84,8 +88,8 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
             }
 
         };
-        birthDate.setKeyListener(null); // Input Text protected
-        birthDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        birthDateTv.setKeyListener(null); // Input Text protected
+        birthDateTv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
@@ -96,7 +100,7 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
             }
         });
 
-        birthDate.setOnClickListener(new View.OnClickListener() {
+        birthDateTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new DatePickerDialog(RequestCard.this, date, myCalendar
@@ -104,16 +108,6 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
-
-        /**
-         * Get user data
-         */
-
-        // mobile
-        TelephonyManager tMgr = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
-
-        mobile.setText(tMgr.getLine1Number());
-
 
         // Adapter for the requests
         RestAdapter adapter = new RestAdapter.Builder()
@@ -124,16 +118,46 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
         requestCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                prf = getSharedPreferences(PREFS, 0);
-                String token = prf.getString("token", "");
-                if (!token.equals("")) {
+                if (validatorFactory.formValidate()) {
                     pBar.setVisibility(View.VISIBLE);
                     // Create user account request
-                    String fName = firstName.getText().toString();
-                    String lName = lastName.getText().toString();
-                    int phone = Integer.parseInt(mobile.getText().toString());
-                    String _email = email.getText().toString();
-                    // TODO call api
+                    String firstName = firstNameTv.getText().toString();
+                    String lastName = lastNameTv.getText().toString();
+                    int mobile;
+                    if(!mobileTv.getText().toString().equals(""))
+                        mobile = Integer.parseInt(mobileTv.getText().toString());
+                    else
+                        mobile = 0;
+                    String email = emailTv.getText().toString();
+                    String birthDate = birthDateTv.getText().toString();
+                    String gender = "";
+                    if(genderMale.isChecked())
+                        gender = "m";
+                    else if(genderFemale.isChecked())
+                        gender = "f";
+                    String address = addressTv.getText().toString();
+                    int[] postalCode = decodePostalCode(postalCodeTv.getText().toString());
+                    String parish = parishTv.getText().toString();
+                    String faceId = "";
+
+                    RestAdapter adapter = new RestAdapter.Builder()
+                            .setEndpoint(BaseURL.BASE_URL.toString())
+                            .build();
+                    UserAPI api = adapter.create(UserAPI.class);
+                    api.loginRegister(firstName, lastName, gender, faceId, birthDate, mobile, email, address, postalCode[0], postalCode[1], parish,  new Callback<JsonObject>() {
+                        @Override
+                        public void success(JsonObject jsonResponse, Response response) {
+                            serverSuccess(jsonResponse);
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            pBar.setVisibility(View.GONE);
+                            Toast.makeText(RequestCard.this, getBaseContext().getString(R.string.rc_6) +
+                                            " " + getBaseContext().getString(R.string.server_error),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         });
@@ -166,17 +190,34 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
     }
 
     private void assignViews() {
-        firstName = (EditText) findViewById(R.id.firstName);
-        lastName = (EditText) findViewById(R.id.lastName);
-        mobile = (EditText) findViewById(R.id.mobile);
-        birthDate = (EditText) findViewById(R.id.birthDate);
+        firstNameTv = (EditText) findViewById(R.id.firstName);
+        validatorFactory.nameValidate(firstNameTv, true);
+
+        lastNameTv = (EditText) findViewById(R.id.lastName);
+        validatorFactory.nameValidate(lastNameTv, true);
+
+        mobileTv = (EditText) findViewById(R.id.mobile);
+        validatorFactory.mobileValidate(mobileTv, true);
+
         // Autocomplete field
-        email = (AutoCompleteTextView) findViewById(R.id.regist_email);
+        emailTv = (AutoCompleteTextView) findViewById(R.id.regist_email);
         populateAutoComplete();
+        validatorFactory.emailValidate(emailTv, true);
+
+        birthDateTv = (EditText) findViewById(R.id.birthDate);
+
+        genderMale = (RadioButton)findViewById(R.id.male);
+        genderFemale = (RadioButton) findViewById(R.id.female);
+
+        addressTv = (EditText) findViewById(R.id.address);
+
+        postalCodeTv = (EditText) findViewById(R.id.postal_code);
+        validatorFactory.pCodeValidator(postalCodeTv, true);
+
+        parishTv = (EditText) findViewById(R.id.parish);
 
         requestCard = (Button) findViewById(R.id.pedir_cartao_button);
         pBar = (ProgressBar) findViewById(R.id.cardRequest_progress);
-        // Check image
 
     }
 
@@ -196,7 +237,7 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(email, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(emailTv, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
@@ -273,7 +314,7 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
                 new ArrayAdapter<>(RequestCard.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
-        email.setAdapter(adapter);
+        emailTv.setAdapter(adapter);
     }
 
     private void updateLabel() {
@@ -281,7 +322,42 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
         String myFormat = "yyyy-mm-dd";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
 
-        birthDate.setText(sdf.format(myCalendar.getTime()));
+        birthDateTv.setText(sdf.format(myCalendar.getTime()));
     }
+
+    private void serverSuccess(JsonObject jsonResponse)
+    {
+        // Save user session
+        Session session = new Session(RequestCard.this);
+        if (jsonResponse.has("token"))
+            session.setToken(jsonResponse.get("token").getAsString());
+        session.setFaceLogin(true);
+        // Persist user
+        My_Realm my_realm = new My_Realm(RequestCard.this);
+        my_realm.setUser(new UserEntity(jsonResponse));
+        // Login is finished
+        pBar.setVisibility(View.GONE);
+        startMainActivity();
+    }
+
+    private void startMainActivity()
+    {
+        Intent main = new Intent(this, MainActivity.class);
+        main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        main.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        startActivity(main);
+    }
+
+    private int[] decodePostalCode(String postalCode)
+    {
+        if(!postalCode.equals("")) {
+            String[] parts = postalCode.split("-");
+            return new int[]{Integer.parseInt(parts[0]), Integer.parseInt(parts[1])};
+        }
+        else
+            return new int[]{0, 0};
+    }
+
 }
 

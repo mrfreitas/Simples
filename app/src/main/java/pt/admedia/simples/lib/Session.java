@@ -40,4 +40,16 @@ public class Session {
         return sharedPRF.getBoolean("isFaceLogin", false);
     }
 
+    public void setFirstLoad(boolean isFirstTime)
+    {
+        SharedPreferences.Editor editor = sharedPRF.edit();
+        editor.putBoolean("isFirstTime", isFirstTime);
+        editor.apply();
+    }
+
+    public boolean getFirstLoad()
+    {
+        return sharedPRF.getBoolean("isFirstTime", true);
+    }
+
 }

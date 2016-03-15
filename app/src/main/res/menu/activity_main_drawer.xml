@@ -9,9 +9,12 @@
             android:title="@string/card" />
         <item
             android:id="@+id/partners"
-            android:checked="true"
             android:icon="@drawable/ic_store_grey600_24dp"
             android:title="@string/partners" />
+        <item
+            android:id="@+id/favorites"
+            android:icon="@drawable/ic_favorite_grey600_24dp"
+            android:title="@string/favorites" />
         <item
             android:id="@+id/preferences"
             android:icon="@drawable/ic_check_circle_grey600_24dp"

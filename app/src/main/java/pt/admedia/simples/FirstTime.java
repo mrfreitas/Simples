@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import io.realm.Realm;
 import pt.admedia.simples.api.BaseURL;
 import pt.admedia.simples.api.SimplesBaseAPI;
 import pt.admedia.simples.api.UserAPI;
@@ -114,7 +113,6 @@ public class FirstTime extends AppCompatActivity {
         });
 
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

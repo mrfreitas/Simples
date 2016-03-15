@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 
 import retrofit.Callback;
 import retrofit.http.POST;
-import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**

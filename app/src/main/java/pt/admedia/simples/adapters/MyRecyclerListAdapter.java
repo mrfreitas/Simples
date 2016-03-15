@@ -58,7 +58,7 @@ public class MyRecyclerListAdapter extends RecyclerView.Adapter<MyRecyclerListAd
 
     }
 
-    private void loadReact(int position, View convertView, ViewHolder holder)
+    private void loadPartners(int position, View convertView, ViewHolder holder)
     {
         final PartnersEntity partner = (PartnersEntity)elements.get(position);
         if(partner != null)
@@ -82,7 +82,7 @@ public class MyRecyclerListAdapter extends RecyclerView.Adapter<MyRecyclerListAd
             holder.discounts.removeAllViews();
             for (Discount discountObj : discounts) {
                 TextView discountTV = new TextView(mContext);
-                discountTV.setText(discountObj.getDescription());
+                discountTV.setText("\u2022" +" "+ discountObj.getDescription());
                 discountTV.setLayoutParams(discountTvParams);
                 discountTV.setTextSize(textSize);
                 discountTV.setTextColor(ContextCompat.getColor(mContext, R.color.text_color));
@@ -103,7 +103,7 @@ public class MyRecyclerListAdapter extends RecyclerView.Adapter<MyRecyclerListAd
     @Override
     public void onBindViewHolder(MyRecyclerListAdapter.ViewHolder holder, final int position) {
 
-        loadReact(position, holder.itemView, holder);
+        loadPartners(position, holder.itemView, holder);
 
     }
 
@@ -115,6 +115,12 @@ public class MyRecyclerListAdapter extends RecyclerView.Adapter<MyRecyclerListAd
 
     public void addToTop(PartnersEntity partner){
         elements.add(0, partner);
+        this.notifyItemInserted(0);
+    }
+
+    public void filteredLisItems(ArrayList partners){
+        clearData();
+        elements = partners;
         this.notifyItemInserted(0);
     }
 

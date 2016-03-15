@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -24,14 +25,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import pt.admedia.simples.api.BaseURL;
+import pt.admedia.simples.lib.IsOnline;
 import pt.admedia.simples.lib.Session;
 import pt.admedia.simples.lib.SimplesPrefs;
 
 
-public class CardFragment extends Fragment {
+public class Apagar extends Fragment {
 
-    ImageView cardImage;
-    ProgressBar cardProgress;
+    private ImageView cardImage;
+    private ProgressBar cardProgress;
+    private String firstName, lastName, cardValDate;
+    long cardNumber;
     // Custom target for the picasso image loader
     private Target target = new Target() {
         @Override
@@ -67,7 +71,7 @@ public class CardFragment extends Fragment {
         public void onPrepareLoad(Drawable placeHolderDrawable) {}
 
     };
-    public CardFragment() {
+    public Apagar() {
         // Required empty public constructor
     }
 
@@ -81,8 +85,14 @@ public class CardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        firstName = getArguments().getString("fistName");
+        lastName = getArguments().getString("lastName");
+        cardNumber = getArguments().getLong("cardNumber");
+        cardValDate = getArguments().getString("cardValDate");
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_card, container, false);
+
     }
 
     @Override
@@ -92,20 +102,33 @@ public class CardFragment extends Fragment {
         String token = session.getToken();
         cardImage = (ImageView) getActivity().findViewById(R.id.card_image);
         cardProgress = (ProgressBar) getActivity().findViewById(R.id.card_progress);
+        TextView name_tv = (TextView) getActivity().findViewById(R.id.cardName);
+        TextView cNumber_tv = (TextView) getActivity().findViewById(R.id.cardNumber);
+        TextView valDate_tv = (TextView) getActivity().findViewById(R.id.cardValDate);
+        String nameStr = String.format(getActivity().getString(R.string.p_name), firstName, lastName);
+        String cNumber = String.format(getActivity().getString(R.string.p_cardNumber), cardNumber);
+        String valDate = String.format(getActivity().getString(R.string.p_valDate), cardValDate);
+        name_tv.setText(nameStr);
+        cNumber_tv.setText(cNumber);
+        valDate_tv.setText(valDate);
+
         Spinner categories = (Spinner) getActivity().findViewById(R.id.categories);
         categories.setVisibility(View.GONE);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.card);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         cardProgress.setVisibility(View.VISIBLE);
-        //Photo
+
+        //Card image
         File f = new File(getContext().getCacheDir(), SimplesPrefs.CARD_NAME.toString());
         if (f.exists()) {
             cardImage.setImageBitmap(BitmapFactory.decodeFile(f.getPath()));
             cardProgress.setVisibility(View.GONE);
         }
         else {
-            Picasso.with(getContext()).load(BaseURL.CARD_IMG + token).rotate(90).into(target);
+            if(IsOnline.isOnline(getContext()))
+                Picasso.with(getContext()).load(BaseURL.CARD_IMG + token).into(target);
         }
     }
 

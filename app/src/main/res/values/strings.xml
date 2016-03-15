@@ -12,23 +12,32 @@
     <string name="prompt_female">Mulher</string>
     <string name="prompt_male">Homem</string>
     <string name="prompt_address">Morada</string>
-    <string name="prompt_postal_address">Código postal</string>
+    <string name="prompt_postal_address">Código postal (XXXX-XXX)</string>
     <string name="prompt_parish">Freguesia</string>
-    <string name="action_request_card">Pedir cartão</string>
+    <string name="action_request_card">Registar</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_sign_in">Login</string>
 
+    <!-- Strings related to card -->
+    <string name="p_name_title">Nome</string>
+    <string name="p_name">%1$s %2$s</string>
+    <string name="p_cardNumber_title">Número do cartão</string>
+    <string name="p_cardNumber">%1$d</string>
+    <string name="p_valDate_title">Data de validade</string>
+    <string name="p_valDate">%1$s</string>
     <!-- Strings related to main -->
     <string name="action_settings">Settings</string>
     <string name="action_logout">Terminar sessão</string>
     <string name="partners">Parceiros</string>
     <string name="card">Cartão</string>
     <string name="preferences">Preferências</string>
+    <string name="favorites">Favoritos</string>
     <string name="user_name">%1$s %2$s</string>
 
     <!--Server error messages-->
     <string name="facebook_error">Houve um erro com a sessão do facebook</string>
     <string name="server_error">Algo correu mal, por favor tente mais tarde!</string>
+    <string name="internet_error">Não foi detetado internet!</string>
 
     <!--Error codes-->
     <string name="rc_1">RC 1:</string>
@@ -36,6 +45,7 @@
     <string name="rc_3">RC 3:</string>
     <string name="rc_4">RC 4:</string>
     <string name="rc_5">RC 5:</string>
+    <string name="rc_6">RC 6:</string>
 
     <!--Validation strings-->
     <string name="error_invalid_email">This email address is invalid</string>
@@ -139,6 +149,38 @@
     <string name="icon_home">&#xf015;</string>
     <string name="icon_phone">&#xf095;</string>
 
+    <!-- Validation Strings -->
+    <string name="empty_validation">Campo obrigatório</string>
+    <string name="email_validation">O email não é válido</string>
+    <string name="conf_email_validation">Os emails não coincidem</string>
+    <string name="password_validation">A palavra-chaves não é válida, no minímo tem de ter 4 caracteres</string>
+    <string name="pCode_validation">Código postal inválido</string>
+    <string name="mobile_validation">Número inválido</string>
+    <string name="conf_password_validation">As palavras-chaves não coincidem</string>
+    <string name="name_validation">O nome não é válido</string>
+    <string name="network_validation">Não foi possível detetar internet, Não é possível efetuar o pedido</string>
+
     <!--Categories-->
-    <string name="restaurantes">seo:restaurantes</string>
+    <string name="restaurantes">restaurantes</string>
+    <string name="restaurantes_online">seo:restaurantes</string>
+    <string name="retalho_alimentar">retalho-alimentar</string>
+    <string name="retalho_alimentar_online">seo:retalho-alimentar</string>
+    <string name="entretenimento_e_lazer">entretenimento-e-lazer</string>
+    <string name="entretenimento_e_lazer_online">seo:entretenimento-e-lazer</string>
+    <string name="reparacoes_automoveis">reparacoes-automoveis</string>
+    <string name="reparacoes_automoveis_online">seo:reparacoes-automoveis</string>
+    <string name="comercio_e_servicos">comercio-e-servicos</string>
+    <string name="comercio_e_servicos_online">seo:comercio-e-servicos</string>
+    <string name="educacao_e_ensino">educacao-e-ensino</string>
+    <string name="educacao_e_ensino_online">seo:educacao-e-ensino</string>
+    <string name="saude_e_bem_estar">saude-e-bem-estar</string>
+    <string name="saude_e_bem_estar_online">seo:saude-e-bem-estar</string>
+    <string name="hoteis_e_turismo">hoteis-e-turismo</string>
+    <string name="hoteis_e_turismo_online">seo:hoteis-e-turismo</string>
+    <string name="moda">moda</string>
+    <string name="moda_online">seo:moda</string>
+    <string name="desporto">desporto</string>
+    <string name="desporto_online">seo:desporto</string>
+    <string name="casa_e_decoracao">casa-e-decoracao</string>
+    <string name="casa_e_decoracao_online">seo:casa-e-decoracao</string>
 </resources>
