@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity
             spinner.setAdapter(dataAdapter);
 
             // Navigation drawer
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             drawer.addDrawerListener(toggle);
@@ -88,11 +89,26 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().addOnBackStackChangedListener(new android.support.v4.app.FragmentManager.OnBackStackChangedListener() {
                 @Override
                 public void onBackStackChanged() {
-                    if (getFragmentManager().getBackStackEntryCount() > 0)
+                    if (getSupportFragmentManager().getBackStackEntryCount() > 0)
                         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     else {
                         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                         toggle.syncState();
+                    }
+                }
+            });
+
+            if(toolbar != null)
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                        getSupportFragmentManager().popBackStack();
+                    } else {
+                        if (drawer.isDrawerOpen(GravityCompat.START))
+                            drawer.closeDrawer(GravityCompat.START);
+                        else
+                            drawer.openDrawer(GravityCompat.START);
                     }
                 }
             });
@@ -107,7 +123,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        final int count = getFragmentManager().getBackStackEntryCount();
+        final int count = getSupportFragmentManager().getBackStackEntryCount();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -117,7 +133,7 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
         }
         else
-            getFragmentManager().popBackStack();
+            getSupportFragmentManager().popBackStack();
     }
 
     @Override
