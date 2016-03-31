@@ -9,9 +9,12 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import io.realm.RealmList;
 import pt.admedia.simples.R;
-import pt.admedia.simples.SimplesApplication;
+import pt.admedia.simples.lib.Category;
+import pt.admedia.simples.lib.SubCategory;
 import pt.admedia.simples.model.PreferenceCategoryEntity;
 import pt.admedia.simples.model.PreferenceEntity;
 
@@ -50,24 +53,29 @@ public class PreferencesAdapter extends RecyclerView.Adapter<PreferencesAdapter.
         return new ViewHolder(itemLayoutView);
     }
 
+    public void setItemsLis(RealmList elements){
+        this.elements = elements;
+        this.notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         onBind = true;
         if(elements.get(position) instanceof PreferenceEntity){
             final PreferenceEntity preference = (PreferenceEntity)elements.get(position);
             viewHolder.title.setText(preference.getTitle());
-            viewHolder.title.setPadding(25, 0, 0, 0);
-            viewHolder.title.setTypeface(SimplesApplication.fontAwesome);
+            viewHolder.title.setPadding(40, 2, 2, 0);
+            viewHolder.switchPreferences.setPadding(2, 2, 5, 0);
+            viewHolder.title.setTypeface(null,Typeface.NORMAL);
             viewHolder.switchPreferences.setChecked(preference.isActive());
-            // TODO: 13/03/2016 extra styling of child preferences
         }else {
             final PreferenceCategoryEntity preferenceCategory = (PreferenceCategoryEntity)elements.get(position);
             viewHolder.title.setText(preferenceCategory.getTitle());
-            viewHolder.title.setPadding(5, 0, 0, 0);
+            viewHolder.title.setPadding(10, 15, 2, 0);
             viewHolder.switchPreferences.setChecked(preferenceCategory.isActive());
-            viewHolder.title.setTypeface(SimplesApplication.fontAwesome, Typeface.BOLD);
+            viewHolder.title.setTypeface(null, Typeface.BOLD);
+            viewHolder.switchPreferences.setPadding(2, 15, 5, 0);
             viewHolder.switchPreferences.setChecked(preferenceCategory.isActive());
-            // TODO: 13/03/2016 extra styling of parent preferences (categories)
         }
         onBind = false;
     }
@@ -77,16 +85,11 @@ public class PreferencesAdapter extends RecyclerView.Adapter<PreferencesAdapter.
         return elements.size();
     }
 
-    public interface PreferenceSelectionListener{
-        void onParentSelected(PreferenceCategoryEntity parent, boolean state);
-        void onChildSelected(PreferenceCategoryEntity parent, PreferenceEntity child, boolean state);
-    }
-
     private PreferenceCategoryEntity getParentCategory(String childId){
         for (Object ro : elements){
-            if(ro instanceof PreferenceCategoryEntity){
+            if(ro instanceof Category){
                 for (PreferenceEntity rochildren : ((PreferenceCategoryEntity)ro).getChildPreferences()){
-                    if(rochildren.getNiu().equals(childId))
+                    if(rochildren.getSeo().equals(childId))
                         return ((PreferenceCategoryEntity)ro);
                 }
             }
@@ -116,11 +119,21 @@ public class PreferencesAdapter extends RecyclerView.Adapter<PreferencesAdapter.
                     notifyDataSetChanged();
                 }else{
                     final PreferenceEntity pe = ((PreferenceEntity)elements.get(getAdapterPosition()));
-                    listener.onChildSelected(getParentCategory(pe.getNiu()), pe,isChecked);
+                    listener.onChildSelected(getParentCategory(pe.getSeo()), pe,isChecked);
                     pe.setActive(isChecked);
                     notifyDataSetChanged();
                 }
             }
         }
+    }
+
+    /**
+     * Interface to respond to a click events on the switch buttons
+     * @onParentSelected Click on a switch of a category (Ex. Restaurantes)
+     * @onChildSelected Click on a  switch of a sub category (Ex. Cosinha portuguesa)
+     */
+    public interface PreferenceSelectionListener{
+        void onParentSelected(PreferenceCategoryEntity parent, boolean state);
+        void onChildSelected(PreferenceCategoryEntity parent, PreferenceEntity child, boolean state);
     }
 }

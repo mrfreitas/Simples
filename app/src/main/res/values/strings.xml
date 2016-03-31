@@ -17,6 +17,7 @@
     <string name="action_request_card">Registar</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_sign_in">Login</string>
+    <string name="authenticating">Autenticando!</string>
 
     <!-- Strings related to card -->
     <string name="p_name_title">Nome</string>
@@ -46,6 +47,7 @@
     <string name="rc_4">RC 4:</string>
     <string name="rc_5">RC 5:</string>
     <string name="rc_6">RC 6:</string>
+    <string name="rc_7">RC 7:</string>
 
     <!--Validation strings-->
     <string name="error_invalid_email">This email address is invalid</string>
@@ -146,8 +148,9 @@
     <string name="pref_title_vibrate">Vibrate</string>
 
     <!-- Font Awesome-->
-    <string name="icon_home">&#xf015;</string>
+    <string name="icon_marker">&#xf041;</string>
     <string name="icon_phone">&#xf095;</string>
+    <string name="icon_gift">&#xf06b;</string>
 
     <!-- Validation Strings -->
     <string name="empty_validation">Campo obrigatório</string>
@@ -183,4 +186,19 @@
     <string name="desporto_online">seo:desporto</string>
     <string name="casa_e_decoracao">casa-e-decoracao</string>
     <string name="casa_e_decoracao_online">seo:casa-e-decoracao</string>
+
+    <string-array name="partners_categories">
+        <item>todas-as-categorias</item>
+        <item>restaurantes</item>
+        <item>retalho-alimentar</item>
+        <item>entretenimento-e-lazer</item>
+        <item>reparacoes-automoveis</item>
+        <item>comercio-e-servicos</item>
+        <item>educacao-e-ensino</item>
+        <item>saude-e-bem-estar</item>
+        <item>hoteis-e-turismo</item>
+        <item>moda</item>
+        <item>desporto</item>
+        <item>casa-e-decoracao</item>
+    </string-array>
 </resources>

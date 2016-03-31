@@ -16,8 +16,7 @@
         android:layout_toStartOf="@+id/pref_switch"
         android:layout_toLeftOf="@+id/pref_switch"
         android:ellipsize="end"
-        android:maxLines="1"
-        style="@style/Widget.AppCompat.TextView.SpinnerItem"/>
+        android:maxLines="1" />
 
     <Switch
         android:id="@+id/pref_switch"

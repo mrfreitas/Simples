@@ -24,10 +24,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import pt.admedia.simples.MainActivity;
 import pt.admedia.simples.R;
 import pt.admedia.simples.api.BaseURL;
 import pt.admedia.simples.lib.IsOnline;
-import pt.admedia.simples.lib.Session;
+import pt.admedia.simples.lib.My_Answers;
 import pt.admedia.simples.lib.SimplesPrefs;
 
 
@@ -80,7 +81,6 @@ public class CardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -99,8 +99,8 @@ public class CardFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Session session = new Session(getContext());
-        String token = session.getToken();
+        // Answers initialization
+        setAnswers();
         cardImage = (ImageView) getActivity().findViewById(R.id.card_image);
         cardProgress = (ProgressBar) getActivity().findViewById(R.id.card_progress);
         TextView name_tv = (TextView) getActivity().findViewById(R.id.cardName);
@@ -129,7 +129,8 @@ public class CardFragment extends Fragment {
         }
         else {
             if(IsOnline.isOnline(getContext()))
-                Picasso.with(getContext()).load(BaseURL.CARD_IMG + token).into(target);
+                Picasso.with(getContext()).load(BaseURL.CARD_IMG + ((MainActivity) getActivity())
+                        .session.getToken()).into(target);
         }
     }
 
@@ -144,4 +145,9 @@ public class CardFragment extends Fragment {
         super.onDetach();
     }
 
+    private void setAnswers()
+    {
+        My_Answers my_answers = new My_Answers(((MainActivity) getActivity()).userEntity.getEmail());
+        my_answers.cardDisplay();
+    }
 }

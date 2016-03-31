@@ -7,14 +7,14 @@ import io.realm.RealmObject;
 /**
  * Created by mrfreitas on 11/03/2016.
  */
-public class Discount extends RealmObject {
+public class DiscountEntity extends RealmObject {
 
     private String name, description, type;
     private int value;
 
-    public Discount() {}
+    public DiscountEntity() {}
 
-    public Discount(JsonObject discount) {
+    public DiscountEntity(JsonObject discount) {
         if (!discount.get("name").isJsonNull())
             this.name = discount.get("name").getAsString();
         if (!discount.get("description").isJsonNull())

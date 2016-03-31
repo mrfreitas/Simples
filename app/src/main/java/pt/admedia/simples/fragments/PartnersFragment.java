@@ -1,8 +1,10 @@
 package pt.admedia.simples.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +31,7 @@ import pt.admedia.simples.adapters.MyRecyclerListAdapter;
 import pt.admedia.simples.api.BaseURL;
 import pt.admedia.simples.api.PartnersAPI;
 import pt.admedia.simples.lib.IsOnline;
+import pt.admedia.simples.lib.My_Answers;
 import pt.admedia.simples.model.My_Realm;
 import pt.admedia.simples.model.PartnersEntity;
 import retrofit.Callback;
@@ -37,16 +40,18 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-public class PartnersFragment extends Fragment {
+public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.CardActions{
 
+    private static final int DIAL_REQUEST = 1;
     private MyRecyclerListAdapter myListAdapter;
     private ArrayList<PartnersEntity> partnersList = new ArrayList<>();
     private RecyclerView partners_list;
     private ProgressBar partnersPbar;
     private String filter;
+    private Spinner categories;
     private My_Realm my_realm;
     private boolean loadPositionZero;
-
+    private String[] categoriesList;
     public PartnersFragment() {
         // Required empty public constructor
     }
@@ -54,6 +59,7 @@ public class PartnersFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        categoriesList = getActivity().getResources().getStringArray(R.array.partners_categories);
     }
 
     @Override
@@ -66,7 +72,10 @@ public class PartnersFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Spinner categories = (Spinner) getActivity().findViewById(R.id.categories);
+        // Answers initialization
+        setAnswers();
+
+        categories = (Spinner) getActivity().findViewById(R.id.categories);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         categories.setVisibility(View.VISIBLE);
         // Spinner reset
@@ -88,62 +97,34 @@ public class PartnersFragment extends Fragment {
         categories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        if(loadPositionZero)
-                            getAsyncLocalPartner();
-                        break;
-                    case 1:
-                        getSelectedLocalPartner(getContext().getResources().getString(R.string.restaurantes));
-                        break;
-                    case 2:
-                        getSelectedLocalPartner(getContext().getResources().getString(R.string.retalho_alimentar));
-                        break;
-                    case 3:
-                        getSelectedLocalPartner(getContext().getResources().getString(R.string.entretenimento_e_lazer));
-                        break;
-                    case 4:
-                        getSelectedLocalPartner(getContext().getResources().getString(R.string.reparacoes_automoveis));
-                        break;
-                    case 5:
-                        getSelectedLocalPartner(getContext().getResources().getString(R.string.comercio_e_servicos));
-                        break;
-                    case 6:
-                        getSelectedLocalPartner(getContext().getResources().getString(R.string.educacao_e_ensino));
-                        break;
-                    case 7:
-                        getSelectedLocalPartner(getContext().getResources().getString(R.string.saude_e_bem_estar));
-                        break;
-                    case 8:
-                        getSelectedLocalPartner(getContext().getResources().getString(R.string.hoteis_e_turismo));
-                        break;
-                    case 9:
-                        getSelectedLocalPartner(getContext().getResources().getString(R.string.moda));
-                        break;
-                    case 10:
-                        getSelectedLocalPartner(getContext().getResources().getString(R.string.desporto));
-                        break;
-                    case 11:
-                        getSelectedLocalPartner(getContext().getResources().getString(R.string.casa_e_decoracao));
-                        break;
-                }
+                if(position > 0)
+                    getSelectedLocalPartner(categoriesList[position]);
+                else if(loadPositionZero)
+                    getAsyncLocalPartner();
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
+        initRecyclerView();
         if(((MainActivity) getActivity()).session.getFirstLoad() && IsOnline.isOnline(getContext())) {
             filter = "";
             getOnlinePartners();
         }
         else
             getAsyncLocalPartner();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode)
+        {
+            case DIAL_REQUEST:
+                int p = categories.getSelectedItemPosition();
+                getSelectedLocalPartner(categoriesList[p]);
+        }
     }
 
     @Override
@@ -173,10 +154,11 @@ public class PartnersFragment extends Fragment {
                     partnersList.add(partner);
                     my_realm.setPartners(partner);
                 }
-                // Initialize recycler view
-                initRecyclerView();
+                partnersPbar.setVisibility(View.GONE);
+                myListAdapter.notifyDataSetChanged();
                 ((MainActivity) getActivity()).session.setFirstLoad(false);
             }
+
             @Override
             public void failure(RetrofitError error) {
                 partnersPbar.setVisibility(View.GONE);
@@ -197,7 +179,7 @@ public class PartnersFragment extends Fragment {
     private void getSelectedLocalPartner(String selection) {
         partnersPbar.setVisibility(View.VISIBLE);
         //myListAdapter.clearData();
-        partnersList =  my_realm.getPartners(selection);
+        partnersList = my_realm.getPartners(selection);
         myListAdapter.filteredLisItems(partnersList);
         partnersPbar.setVisibility(View.GONE);
 
@@ -206,11 +188,10 @@ public class PartnersFragment extends Fragment {
     private void initRecyclerView()
     {
         myListAdapter = new MyRecyclerListAdapter(getActivity().getApplicationContext(), partnersList,
-                R.layout.t_card);
+                R.layout.t_card, PartnersFragment.this);
         //    myListAdapter.clearData();
         partners_list.setLayoutManager(new LinearLayoutManager(getContext()));
         partners_list.setAdapter(myListAdapter);
-        partnersPbar.setVisibility(View.GONE);
     }
 
     private RealmChangeListener callback = new RealmChangeListener() {
@@ -220,8 +201,23 @@ public class PartnersFragment extends Fragment {
             for (PartnersEntity partner : partnerAsync) {
                 partnersList.add(partner);
             }
-            // Initialize recycler view
-            initRecyclerView();
+            partnersPbar.setVisibility(View.GONE);
+            myListAdapter.notifyDataSetChanged();
         }
     };
+
+    private void setAnswers()
+    {
+        My_Answers my_answers = new My_Answers(((MainActivity) getActivity()).userEntity.getEmail());
+        my_answers.partnersList();
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
+                .replace(R.id.frame_container, new PartnerDetailFragment())
+                .addToBackStack("detail")
+                .commit();
+    }
 }

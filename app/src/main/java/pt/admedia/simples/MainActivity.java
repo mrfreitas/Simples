@@ -2,7 +2,6 @@ package pt.admedia.simples;
 
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -19,14 +18,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.gson.JsonObject;
-import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 import java.io.File;
 
@@ -34,7 +30,6 @@ import pt.admedia.simples.api.BaseURL;
 import pt.admedia.simples.api.UserAPI;
 import pt.admedia.simples.fragments.CardFragment;
 import pt.admedia.simples.fragments.PartnersFragment;
-import pt.admedia.simples.fragments.PreferencesFragment;
 import pt.admedia.simples.lib.Session;
 import pt.admedia.simples.lib.SimplesPrefs;
 import pt.admedia.simples.model.My_Realm;
@@ -43,13 +38,12 @@ import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import retrofit.mime.TypedByteArray;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public Session session;
-    private UserEntity userEntity;
+    public UserEntity userEntity;
     private TextView userName, userEmail;
     private ImageView userImage;
     private FragmentManager fragmentManager;
@@ -71,40 +65,59 @@ public class MainActivity extends AppCompatActivity
             setSupportActionBar(toolbar);
 
             // Spinner
-            Spinner spinner = (Spinner) findViewById(R.id.categories);
+            Spinner spinner = (Spinner)findViewById(R.id.categories);
             ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, R.layout.categories,
                     getResources().getStringArray(R.array.categories));
-            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            dataAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
             spinner.setAdapter(dataAdapter);
 
             // Navigation drawer
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+            final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.setDrawerListener(toggle);
+            drawer.addDrawerListener(toggle);
             toggle.syncState();
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.setNavigationItemSelectedListener(this);
 
-            assignView();
+            assignView(navigationView);
+
             // Assign user data to it's views
             assignUserData();
+
+            getSupportFragmentManager().addOnBackStackChangedListener(new android.support.v4.app.FragmentManager.OnBackStackChangedListener() {
+                @Override
+                public void onBackStackChanged() {
+                    if (getFragmentManager().getBackStackEntryCount() > 0)
+                        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    else {
+                        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                        toggle.syncState();
+                    }
+                }
+            });
 
             fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.frame_container, cardFragment()).commit();
         }
-
+        else
+            logOut();
     }
 
 
     @Override
     public void onBackPressed() {
+        final int count = getFragmentManager().getBackStackEntryCount();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else if(count == 0){
             super.onBackPressed();
         }
+        else
+            getFragmentManager().popBackStack();
     }
 
     @Override
@@ -146,19 +159,17 @@ public class MainActivity extends AppCompatActivity
             case R.id.card:
                 fragment = cardFragment();
                 break;
-            case R.id.preferences:
+/*            case R.id.preferences:
                 fragment = new PreferencesFragment();
                 break;
             case R.id.favorites:
                 fragment = new FavoritesFragment();
-                break;
+                break;*/
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        if (fragment != null) {
+        if (fragment != null)
             fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
-        }
         return true;
     }
 
@@ -183,47 +194,33 @@ public class MainActivity extends AppCompatActivity
         api.logOut(token, new Callback<JsonObject>() {
             @Override
             public void success(JsonObject jsonResponse, Response response) {
-                JsonObject status = jsonResponse.getAsJsonObject("status");
-                if (status.get("value").getAsInt() == 1) {
-                    // Clear data base
-                    My_Realm my_realm = new My_Realm(MainActivity.this);
-                    my_realm.removeUser();
-                    // Card deletion
-                    // Delete user photo
-                    File f = new File(getCacheDir(), SimplesPrefs.CARD_NAME.toString());
-                    if (f.exists())
-                        f.delete();
-                    // Clear session
-                    session.setToken("");
-                    if (session.getFaceLogin()) {
-                        LoginManager.getInstance().logOut();
-                        session.setFaceLogin(false);
-                    }
-                    else {
-                        // TODO find a solution for the case of session token is initialized in the app and not exist in the server
-                    }
-                    // User is redirected for the first time screen
-                    firstTime();
-                }
+                // TODO move card deletion, clear data, clear data base, to here
             }
-
             @Override
             public void failure(RetrofitError error) {
-                if (error.getResponse().getBody() != null) {
-                    String json = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
-                    Log.v("failure", json);
-                }
-                Toast.makeText(MainActivity.this, getResources().getString(R.string.rc_3) +
-                                " " + getResources().getString(R.string.server_error),
-                        Toast.LENGTH_SHORT).show();
             }
         });
+        // Card deletion
+        File f = new File(getCacheDir(), SimplesPrefs.CARD_NAME.toString());
+        if (f.exists())
+            f.delete();
+        // Clear session
+        session.setToken("");
+        if (session.getFaceLogin()) {
+            LoginManager.getInstance().logOut();
+            session.setFaceLogin(false);
+        }
+        // Clear data base
+        My_Realm my_realm = new My_Realm(MainActivity.this);
+        my_realm.removeUser();
+        // User is redirected for the first time screen
+        firstTime();
     }
 
-    private void assignView() {
-        userName = (TextView) findViewById(R.id.user_name);
-        userEmail = (TextView) findViewById(R.id.user_email);
-        userImage = (ImageView) findViewById(R.id.user_image);
+    private void assignView(NavigationView navigationView) {
+        userName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.user_name);
+        userEmail = (TextView) navigationView.getHeaderView(0).findViewById(R.id.user_email);
+        userImage = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.user_image);
     }
 
     private void assignUserData() {
@@ -233,15 +230,9 @@ public class MainActivity extends AppCompatActivity
             String text = String.format(res.getString(R.string.user_name), userEntity.getFirstName(), userEntity.getLastName());
             userName.setText(text);
             userEmail.setText(userEntity.getEmail());
-            if (!userEntity.getFaceUserId().equals("")) {
+            if (session.getFaceLogin()) {
                 String imgLink = BaseURL.FACE_1.toString() + userEntity.getFaceUserId() + BaseURL.FACE_2.toString();
-                Transformation transformation = new RoundedTransformationBuilder()
-                        .borderColor(Color.WHITE)
-                        .borderWidthDp(2)
-                        .cornerRadiusDp(35)
-                        .oval(false)
-                        .build();
-                Picasso.with(this).load(imgLink).transform(transformation).into(userImage);
+                Picasso.with(this).load(imgLink).into(userImage);
             }
         }
     }

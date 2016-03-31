@@ -1,7 +1,10 @@
 package pt.admedia.simples.model;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -14,6 +17,8 @@ public class UserEntity extends RealmObject implements Imodel {
     private int mobile;
     private long cardNumber;
     private String cardValDate, birthDay;
+    private String dataBaseTest = "1";
+    private RealmList<PreferenceEntity> preferences = new RealmList<>();
 
     @PrimaryKey
     private String email;
@@ -67,6 +72,20 @@ public class UserEntity extends RealmObject implements Imodel {
                 if (!info.get("birthday").isJsonNull())
                     this.birthDay = info.get("birthday").getAsString();
             }
+
+            // Preferences
+/*            JsonArray prefs = null;
+            if(user.has("preferences"))
+                prefs = user.get("preferences").getAsJsonArray();
+            if(prefs != null)
+            {
+                for (JsonElement item : prefs) {
+                    JsonObject json = item.getAsJsonObject();
+                    PreferenceEntity pref = new PreferenceEntity(json);
+                    preferences.add(pref);
+                }
+            }*/
+
         }
     }
 
@@ -161,4 +180,17 @@ public class UserEntity extends RealmObject implements Imodel {
         this.birthDay = birthDay;
     }
 
+    public RealmList<PreferenceEntity> getPreferences() {
+        return preferences;
+    }
+    public void setPreferences(RealmList<PreferenceEntity> preferences) {
+        this.preferences = preferences;
+    }
+
+    public String getDataBaseTest() {
+        return dataBaseTest;
+    }
+    public void setDataBaseTest(String dataBaseTest) {
+        this.dataBaseTest = dataBaseTest;
+    }
 }

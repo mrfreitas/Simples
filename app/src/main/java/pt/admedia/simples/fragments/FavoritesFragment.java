@@ -1,4 +1,4 @@
-package pt.admedia.simples;
+package pt.admedia.simples.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Spinner;
 
+import pt.admedia.simples.R;
 
 
 public class FavoritesFragment extends Fragment {

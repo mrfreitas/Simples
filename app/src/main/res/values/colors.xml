@@ -3,8 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+  <!--  <color name="colorAccent">#A24384</color>-->
     <color name="white">#ffffff</color>
-    <color name="btn_login">#FFED2348</color>
+    <color name="btn_login">#ED2348</color>
     <color name="btn_login_pressed">#ed5874</color>
     <color name="text_hint">#FF737373</color>
     <color name="face_btn">#416BC1</color>

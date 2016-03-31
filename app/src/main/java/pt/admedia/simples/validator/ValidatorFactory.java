@@ -111,13 +111,11 @@ public class ValidatorFactory
 
     public void pCodeValidator(TextView v , boolean addToForm)
     {
-        if(!v.getText().toString().equals("")) {
-            Validator pCodeValidator = new Validator(v);
-            pCodeValidator.addValidator(new PostalCodeValidator(this.context.getResources().getString(R.string.pCode_validation)));
-            v.setOnFocusChangeListener(pCodeValidator);
-            if (addToForm)
-                formValidator.addValidates(pCodeValidator);
-        }
+        Validator pCValidator = new Validator(v);
+        pCValidator.addValidator(new PostalCodeValidator(this.context.getResources().getString(R.string.pCode_validation)));
+        v.setOnFocusChangeListener(pCValidator);
+        if (addToForm)
+            formValidator.addValidates(pCValidator);
     }
 
     public void isDepending(TextView v ,TextView v1, boolean addToForm)

@@ -36,10 +36,13 @@ public class PostalCodeValidator extends AbstractValidator
     @Override
     public boolean validate(TextView textView)
     {
-        Pattern pattern= Pattern.compile(PATTERN);
-        Matcher matcher = pattern.matcher(textView.getText().toString());
-        boolean asError = !matcher.matches();
-        textView.setError(asError ? errorMessage : null);
+        boolean asError = false;
+        if(textView.getText().length() > 0) {
+            Pattern pattern = Pattern.compile(PATTERN);
+            Matcher matcher = pattern.matcher(textView.getText().toString());
+            asError = !matcher.matches();
+            textView.setError(asError ? errorMessage : null);
+        }
         return asError;
     }
 

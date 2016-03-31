@@ -1,5 +1,6 @@
 package pt.admedia.simples;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,8 @@ import java.util.List;
 import pt.admedia.simples.api.BaseURL;
 import pt.admedia.simples.api.SimplesBaseAPI;
 import pt.admedia.simples.api.UserAPI;
+import pt.admedia.simples.lib.IsOnline;
+import pt.admedia.simples.lib.My_Answers;
 import pt.admedia.simples.lib.Session;
 import pt.admedia.simples.lib.SimplesPrefs;
 import pt.admedia.simples.model.My_Realm;
@@ -48,7 +51,7 @@ public class FirstTime extends AppCompatActivity {
     private LoginButton faceLoginBt;
     private Button customFBBt, emailLoginBt, requestCardBt;
     private CallbackManager callbackManager;
-    private ProgressBar firstProgress;
+    private ProgressDialog progress;
 
 
     @Override
@@ -74,6 +77,11 @@ public class FirstTime extends AppCompatActivity {
         // TODO face login already return the token
         //  requestAuthorization();
 
+        progress=new ProgressDialog(this);
+        progress.setMessage(getResources().getString(R.string.authenticating));
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
+
         // Request card
         requestCardBt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,23 +100,34 @@ public class FirstTime extends AppCompatActivity {
             }
         });
 
+        faceLoginBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progress.show();
+
+            }
+        });
         // Login/register with facebook
         faceLoginBt.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 AccessToken accessToken = loginResult.getAccessToken();
-                serverLoginFace(accessToken);
+                if(IsOnline.isOnline(FirstTime.this))
+                    serverLoginFace(accessToken);
             }
 
             @Override
             public void onCancel() {
-                // App code
+                progress.dismiss();
+
             }
 
             @Override
             public void onError(FacebookException exception) {
-                Toast.makeText(FirstTime.this, getBaseContext().getResources().getString(R.string
+                if(IsOnline.isOnline(FirstTime.this))
+                    Toast.makeText(FirstTime.this, getBaseContext().getResources().getString(R.string
                         .facebook_error), Toast.LENGTH_SHORT).show();
+                progress.dismiss();
             }
         });
 
@@ -129,7 +148,6 @@ public class FirstTime extends AppCompatActivity {
     private void assignViews()
     {
         callbackManager = CallbackManager.Factory.create();
-        firstProgress = (ProgressBar) findViewById(R.id.first_progress);
         requestCardBt = (Button) findViewById(R.id.request_card_button);
         emailLoginBt = (Button) findViewById(R.id.email_login_button);
         customFBBt = (Button) findViewById(R.id.custom_fb_button);
@@ -169,7 +187,6 @@ public class FirstTime extends AppCompatActivity {
 
     private void serverLoginFace(final AccessToken accessToken)
     {
-        firstProgress.setVisibility(View.VISIBLE);
         String faceUserId = accessToken.getUserId();
         RestAdapter adapter = new RestAdapter.Builder()
                 .setEndpoint(BaseURL.BASE_URL.toString())
@@ -187,24 +204,25 @@ public class FirstTime extends AppCompatActivity {
                     GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                         @Override
                         public void onCompleted(JSONObject faceUserData, GraphResponse response) {
-                        loginRegister(faceUserData);
+                            loginRegister(faceUserData);
                         }
                     });
                     Bundle parameters = new Bundle();
-                    parameters.putString("fields", "id, first_name, last_name, gender, email, gender, birthday, location, phone");
+                    parameters.putString("fields", "id, first_name, last_name, gender, email, birthday, location");
                     request.setParameters(parameters);
-                }
-                else {
+                    request.executeAsync();
+                } else {
                     // Login with success
-                    faceServerSuccess(jsonResponse);
+                    faceServerSuccess(jsonResponse, true);
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
+                progress.dismiss();
                 Toast.makeText(FirstTime.this, getBaseContext().getString(R.string.rc_1) +
                                 " " + getBaseContext().getString(R.string.server_error),
-                        Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -248,7 +266,7 @@ public class FirstTime extends AppCompatActivity {
         api.loginRegister(firstName, lastName, sex, faceId, birthDate, phone, email, address, postal_long, code, region, new Callback<JsonObject>() {
             @Override
             public void success(JsonObject jsonResponse, Response response) {
-                faceServerSuccess(jsonResponse);
+                faceServerSuccess(jsonResponse, false);
             }
 
             @Override
@@ -284,7 +302,7 @@ public class FirstTime extends AppCompatActivity {
         return targetFormat.format(date);
     }
 
-    private void faceServerSuccess(JsonObject jsonResponse)
+    private void faceServerSuccess(JsonObject jsonResponse, boolean isLogin)
     {
         // Save user session
         Session session = new Session(FirstTime.this);
@@ -293,9 +311,16 @@ public class FirstTime extends AppCompatActivity {
         session.setFaceLogin(true);
         // Persist user
         My_Realm my_realm = new My_Realm(FirstTime.this);
-        my_realm.setUser(new UserEntity(jsonResponse));
+        UserEntity newUser = new UserEntity(jsonResponse);
+        my_realm.setUser(newUser);
         // Login is finished
-        firstProgress.setVisibility(View.GONE);
+        progress.dismiss();
+        // Answers
+        My_Answers my_answers = new My_Answers(newUser.getEmail());
+        if(isLogin)
+            my_answers.logIn("Facebook");
+        else
+            my_answers.signUp("Facebook", newUser.getMobile());
         startMainActivity();
     }
 

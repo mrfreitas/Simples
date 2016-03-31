@@ -3,154 +3,212 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/card_view"
+    android:clickable="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     card_view:cardCornerRadius="0dp"
-    android:layout_marginBottom="15dp"
-    android:layout_marginLeft="7dp"
-    android:layout_marginRight="7dp"
-    android:layout_marginStart="7dp"
-    android:layout_marginEnd="7dp">
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/card_padding"
-        android:paddingLeft="@dimen/card_padding"
-        android:paddingRight="@dimen/card_padding"
-        android:paddingBottom="@dimen/card_padding_bottom"
-        android:background="@color/card_background">
+    android:layout_marginBottom="10dp">
 
-        <TextView
-            android:text="Name"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/partnerName"
-            android:textColor="@color/text_tittle"
-            android:gravity="center_vertical"
-            android:paddingTop="10dp"
-            android:paddingBottom="13dp"
-            android:paddingLeft="10dp"
-            android:paddingStart="10dp"
-            android:paddingRight="5dp"
-            android:paddingEnd="5dp"
-            />
 
-        <LinearLayout
+        <android.support.design.widget.CoordinatorLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:id="@+id/toDetail"
+            android:id="@+id/coordinatorDetail"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:clickable="true"
+            android:background="@color/white"
+            android:paddingBottom="15dp"
             >
-            <ImageView
+            <RelativeLayout
+                android:id="@+id/partner_list_item"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:id="@+id/presentation_image"
-                android:layout_weight="25"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/placeholder"/>
+                android:layout_height="wrap_content">
 
-
-                <RelativeLayout
-                    android:id="@+id/partner_info"
+                <ImageView
                     android:layout_width="match_parent"
-                    android:layout_weight="100"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp"
-                    android:paddingTop="7dp"
-                    android:paddingBottom="7dp">
+                    android:scaleType="fitXY"
+                    android:id="@+id/presentation_image"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/placeholder"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/presentation_image">
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="60dp"
+                        android:id="@+id/logo"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
+                        android:layout_marginRight="3dp"
+                        android:layout_marginEnd="3dp"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
                     <TextView
-                        android:text="@string/icon_home"
+                        android:text="Name"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:layout_width="wrap_content"
+                        android:layout_width="300dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/locationIcon"
+                        android:id="@+id/partnerName"
                         android:textColor="@color/text_tittle"
-                        android:paddingTop="7dp"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        />
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="20dp"
+                        android:paddingTop="10dp"
+                        android:paddingLeft="10dp"
+                        android:paddingStart="10dp"
+                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@+id/logo"
+                        android:layout_toStartOf="@+id/logo" />
                     <TextView
                         android:text="Morada"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:layout_width="100dp"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:layout_width="300dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/locationTitle"
-                        android:textColor="@color/text_tittle"
                         android:gravity="center_vertical"
-                        android:padding="@dimen/textPadding"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_toRightOf="@+id/locationIcon"
-                        android:layout_toEndOf="@+id/locationIcon" />
-                    <TextView
-                        android:text="@string/icon_phone"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/contactIcon"
-                        android:textColor="@color/text_tittle"
-                        android:paddingTop="13dp"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        android:layout_below="@+id/locationIcon"
-                         />
-                    <TextView
-                        android:text="Contacto"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/contactTitle"
-                        android:textColor="@color/text_tittle"
-                        android:gravity="center_vertical"
-                        android:padding="@dimen/textPadding"
-                        android:ellipsize="end"
-                        android:singleLine="true"
-                        android:layout_marginBottom="5dp"
-                        android:layout_below="@+id/locationTitle"
-                        android:layout_alignLeft="@+id/locationTitle"
-                        android:layout_alignStart="@+id/locationTitle" />
+                        android:paddingLeft="10dp"
+                        android:paddingStart="10dp"
+                        android:paddingRight="5dp"
+                        android:paddingEnd="5dp"
+                        android:layout_below="@+id/partnerName"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_toLeftOf="@+id/logo"
+                        android:layout_toStartOf="@+id/logo" />
                 </RelativeLayout>
-                <include
-                    layout="@layout/t_divider"
-                    android:id="@+id/div"
-                    android:layout_width="match_parent"
-                    android:layout_height= "@dimen/divider_height" />
-                <TextView
-                    android:text="Descontos:"
-                    android:textAllCaps="true"
-                    android:layout_marginTop="5dp"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/descriptionTitle"
-                    android:textColor="@color/text_tittle"
-                    android:gravity="center_vertical"
-                    android:padding="@dimen/textPadding"
-                    />
-                <LinearLayout
-                    android:id="@+id/discounts"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginBottom="3dp"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:paddingBottom="2dp">
-                </LinearLayout>
+                <!--<RelativeLayout-->
+                    <!--android:id="@+id/partner_info"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:orientation="vertical"-->
+                    <!--android:paddingRight="15dp"-->
+                    <!--android:paddingLeft="15dp"-->
+                    <!--android:paddingTop="7dp"-->
+                    <!--android:paddingBottom="7dp"-->
+                    <!--android:layout_below="@+id/presentation_image">-->
+                    <!--<TextView-->
+                        <!--android:text="@string/icon_marker"-->
+                        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:id="@+id/locationIcon"-->
+                        <!--android:textColor="@color/text_tittle"-->
+                        <!--android:paddingTop="7dp"-->
+                        <!--android:ellipsize="end"-->
+                        <!--android:singleLine="true"-->
+                        <!--/>-->
+                    <!--<TextView-->
+                        <!--android:text="Morada"-->
+                        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                        <!--android:layout_width="263dp"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:id="@+id/locationTitle"-->
+                        <!--android:textColor="@color/text_tittle"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:clickable="true"-->
+                        <!--android:padding="@dimen/textPadding"-->
+                        <!--android:ellipsize="end"-->
+                        <!--android:singleLine="true"-->
+                        <!--android:layout_marginStart="5dp"-->
+                        <!--android:layout_marginLeft="5dp"-->
+                        <!--android:layout_alignParentTop="true"-->
+                        <!--android:layout_toRightOf="@+id/locationIcon" />-->
+                    <!--<TextView-->
+                        <!--android:text="@string/icon_phone"-->
+                        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:id="@+id/contactIcon"-->
+                        <!--android:textColor="@color/text_tittle"-->
+                        <!--android:paddingTop="13dp"-->
+                        <!--android:ellipsize="end"-->
+                        <!--android:singleLine="true"-->
+                        <!--android:layout_below="@+id/locationIcon"-->
+                         <!--/>-->
+                    <!--<TextView-->
+                        <!--android:text="Contacto"-->
+                        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:clickable="true"-->
+                        <!--android:id="@+id/contactTitle"-->
+                        <!--android:textColor="@color/text_tittle"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:padding="@dimen/textPadding"-->
+                        <!--android:ellipsize="end"-->
+                        <!--android:singleLine="true"-->
+                        <!--android:layout_marginStart="5dp"-->
+                        <!--android:layout_marginLeft="5dp"-->
+                        <!--android:layout_marginBottom="5dp"-->
+                        <!--android:layout_below="@+id/locationTitle"-->
+                        <!--android:layout_alignLeft="@+id/locationTitle"-->
+                        <!--android:layout_alignStart="@+id/locationTitle" />-->
 
-        </LinearLayout>
-    </LinearLayout>
+                    <!--<include-->
+                        <!--layout="@layout/t_divider"-->
+                        <!--android:id="@+id/div"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height= "@dimen/divider_height"-->
+                        <!--android:layout_below="@+id/contactTitle"/>-->
+                    <!--<TextView-->
+                        <!--android:text="Descontos:"-->
+                        <!--android:textAllCaps="true"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:layout_marginLeft="@dimen/card_padding"-->
+                        <!--android:layout_marginEnd="@dimen/card_padding"-->
+                        <!--android:layout_marginStart="@dimen/card_padding"-->
+                        <!--android:layout_marginRight="@dimen/card_padding"-->
+                        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:id="@+id/descriptionTitle"-->
+                        <!--android:textColor="@color/text_tittle"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:padding="@dimen/textPadding"-->
+                        <!--android:layout_below="@+id/div"-->
+                        <!--/>-->
+                    <!--<LinearLayout-->
+                        <!--android:id="@+id/discounts"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:orientation="vertical"-->
+                        <!--android:layout_marginTop="2dp"-->
+                        <!--android:layout_marginBottom="3dp"-->
+                        <!--android:paddingLeft="10dp"-->
+                        <!--android:paddingRight="10dp"-->
+                        <!--android:paddingStart="10dp"-->
+                        <!--android:paddingEnd="10dp"-->
+                        <!--android:paddingBottom="2dp"-->
+                        <!--android:layout_below="@+id/descriptionTitle">-->
+                    <!--</LinearLayout>-->
+                <!--</RelativeLayout>-->
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/discount_round"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_margin="16dp"
+                android:clickable="false"
+                android:background="@drawable/discount_bt"
+                app:layout_anchor="@id/presentation_image"
+                app:layout_anchorGravity="bottom|left|start"
+                app:elevation="0dp"
+                app:borderWidth="0dp"
+                android:textColor="@color/white"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:gravity="center_vertical|center_horizontal"
+                />
+
+        </android.support.design.widget.CoordinatorLayout>
+
 </android.support.v7.widget.CardView>

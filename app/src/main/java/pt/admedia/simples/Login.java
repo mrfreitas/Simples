@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.app.ProgressDialog;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -16,6 +17,7 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +27,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 
@@ -33,6 +36,8 @@ import java.util.List;
 
 import pt.admedia.simples.api.BaseURL;
 import pt.admedia.simples.api.UserAPI;
+import pt.admedia.simples.lib.IsOnline;
+import pt.admedia.simples.lib.My_Answers;
 import pt.admedia.simples.lib.Session;
 import pt.admedia.simples.model.My_Realm;
 import pt.admedia.simples.model.UserEntity;
@@ -58,15 +63,16 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     // UI references.
     private AutoCompleteTextView loginEmail;
     private EditText mPasswordView;
-    private View mProgressView;
     private View mLoginFormView;
+    private ProgressDialog progress;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_login);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Set up the login form.
         loginEmail = (AutoCompleteTextView) findViewById(R.id.login_email);
@@ -93,7 +99,10 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         });
 
         mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        progress=new ProgressDialog(this);
+        progress.setMessage(getResources().getString(R.string.authenticating));
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
 
     }
 
@@ -162,8 +171,10 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
 
         if (validatorFactory.formValidate())
         {
-            showProgress(true);
-            loginAuth(email, password);
+            if(IsOnline.isOnline(Login.this)) {
+                progress.show();
+                loginAuth(email, password);
+            }
         }
     }
 
@@ -175,42 +186,6 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
-    }
-
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
     }
 
     @Override
@@ -276,25 +251,40 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
         api.loginAuth(email, password, new Callback<JsonObject>() {
             @Override
             public void success(JsonObject jsonResponse, Response response) {
-                // Save user session
-                Session session = new Session(Login.this);
-                if (jsonResponse.has("token"))
-                    session.setToken(jsonResponse.get("token").getAsString());
-                // Persist user
-                My_Realm my_realm = new My_Realm(Login.this);
-                my_realm.setUser(new UserEntity(jsonResponse));
-                startMainActivity();
+                JsonObject status = jsonResponse.get("status").getAsJsonObject();
+                int value = status.get("value").getAsInt();
+                if(value == 1) {
+                    // Save user session
+                    Session session = new Session(Login.this);
+                    if (jsonResponse.has("token"))
+                        session.setToken(jsonResponse.get("token").getAsString());
+                    // Persist user
+                    My_Realm my_realm = new My_Realm(Login.this);
+                    UserEntity newUser = new UserEntity(jsonResponse);
+                    my_realm.setUser(newUser);
+                    progress.dismiss();
+                    startMainActivity(newUser.getEmail());
+                }
+                else
+                {
+                    progress.dismiss();
+                    String desc = status.get("description").getAsString();
+                    Toast.makeText(Login.this, desc, Toast.LENGTH_LONG).show();
+                }
             }
-
             @Override
             public void failure(RetrofitError error) {
-                showProgress(false);
+                Toast.makeText(Login.this, getBaseContext().getString(R.string.rc_7) + " " +
+                        getBaseContext().getString(R.string.server_error), Toast.LENGTH_LONG).show();
+                progress.dismiss();
             }
         });
     }
 
-    private void startMainActivity()
+    private void startMainActivity(String email)
     {
+        My_Answers my_answers = new My_Answers(email);
+        my_answers.logIn("email");
         Intent main = new Intent(this, MainActivity.class);
         main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

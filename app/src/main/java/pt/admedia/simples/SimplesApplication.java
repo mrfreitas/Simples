@@ -8,10 +8,13 @@ import android.content.pm.Signature;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.multidex.MultiDex;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -19,6 +22,7 @@ import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.exceptions.RealmMigrationNeededException;
 import pt.admedia.simples.lib.Session;
+import pt.admedia.simples.model.My_Realm;
 
 /**
  * Created by mrfreitas on 04/03/2016.
@@ -32,6 +36,8 @@ public class SimplesApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        MultiDex.install(getBaseContext());
+        Fabric.with(this, new Crashlytics());
 
         printHasKey();
         buildDatabase();
@@ -42,6 +48,11 @@ public class SimplesApplication extends Application {
         fontAwesome = Typeface.createFromAsset(getAssets(), "fontawesome-webfont.ttf");
         Session session = new Session(this);
         session.setFirstLoad(true);
+    }
+
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     public void printHasKey(){
@@ -65,7 +76,7 @@ public class SimplesApplication extends Application {
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this).build();
         try {
             Realm realm = Realm.getInstance(realmConfiguration);
-            isOnline(realmConfiguration);
+            isOnline(realmConfiguration, realm);
             return realm;
         } catch (RealmMigrationNeededException e){
             try {
@@ -79,22 +90,17 @@ public class SimplesApplication extends Application {
         }
     }
 
-    public void isOnline(RealmConfiguration realmConfiguration)
+    public void isOnline(RealmConfiguration realmConfiguration, Realm realm)
     {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if(!(netInfo != null && netInfo.isConnectedOrConnecting()))
+        if(netInfo != null && netInfo.isConnectedOrConnecting())
         {
-            try {
-                Realm.deleteRealm(realmConfiguration);
-            } catch (Exception ex){
-                throw ex;
-                //No Realm file to remove.
-            }
-            Toast.makeText(this, R.string.network_validation, Toast.LENGTH_LONG).show();
-            isOnline = false;
+            My_Realm my_realm = new My_Realm(this);
+            my_realm.removePartners();
+            isOnline = true;
         }
         else
-            isOnline = true;
+            isOnline = false;
     }
 }

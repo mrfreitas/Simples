@@ -9,23 +9,34 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import io.realm.RealmList;
 import pt.admedia.simples.R;
 import pt.admedia.simples.adapters.PreferencesAdapter;
+import pt.admedia.simples.api.BaseURL;
+import pt.admedia.simples.api.PartnersAPI;
 import pt.admedia.simples.model.PreferenceCategoryEntity;
 import pt.admedia.simples.model.PreferenceEntity;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
-//implements Switch.OnCheckedChangeListener
 public class PreferencesFragment extends Fragment implements PreferencesAdapter.PreferenceSelectionListener {
     private RecyclerView preferencesRV;
     private PreferencesAdapter mAdapter;
-    private RealmList list;
+    private ProgressBar prefsPbar;
+    private RealmList list = new RealmList();
+    private View rootview;
 
-//    Switch restaurant_switch, switch_peixe, switch_carnes, switch_portuguesa, switch_japones, switch_chines;
-//    Switch switch_italiano, switch_indiano, switch_contemporanea, switch_fast, switch_vegetariano, switch_petiscos;
     public PreferencesFragment() {
         // Required empty public constructor
     }
@@ -41,51 +52,7 @@ public class PreferencesFragment extends Fragment implements PreferencesAdapter.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootview =  inflater.inflate(R.layout.fragment_preferences, container, false);
-
-        // TODO: 13/03/2016 get from api
-        PreferenceEntity a = new PreferenceEntity("a","Peixe fresco e marisco");
-        PreferenceEntity b = new PreferenceEntity("b","Carnes");
-        PreferenceEntity c = new PreferenceEntity("c","Cozinhas portuguesas");
-        PreferenceEntity d = new PreferenceEntity("d","Japonês");
-        PreferenceEntity e = new PreferenceEntity("e","Chinês");
-        PreferenceEntity f = new PreferenceEntity("f","Italiano");
-        RealmList prefList = new RealmList();
-        RealmList prefListSports = new RealmList();
-        prefList.add(a);
-        prefList.add(b);
-        prefList.add(c);
-        prefList.add(d);
-        prefList.add(e);
-        prefList.add(f);
-
-        PreferenceEntity g = new PreferenceEntity("g","Recintos");
-        PreferenceEntity h = new PreferenceEntity("h","Vestuario");
-        PreferenceEntity i = new PreferenceEntity("i","Ginasio");
-        PreferenceEntity j = new PreferenceEntity("j","Eventos desportivos");
-        PreferenceEntity k = new PreferenceEntity("k","Academias");
-
-        prefListSports.add(g);
-        prefListSports.add(h);
-        prefListSports.add(i);
-        prefListSports.add(j);
-        prefListSports.add(k);
-
-
-        PreferenceCategoryEntity a1 = new PreferenceCategoryEntity("a1","Restaurantes");
-        PreferenceCategoryEntity a2 = new PreferenceCategoryEntity("a2","Desporto");
-        a1.setChildPreferences(prefList);
-        a2.setChildPreferences(prefListSports);
-
-        list = new RealmList();
-        list.add(a1);
-        list.add(a2);
-
-        preferencesRV = (RecyclerView)rootview.findViewById(R.id.preferences_rv);
-        mAdapter = new PreferencesAdapter(list , R.layout.list_item_preference,this);
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
-        preferencesRV.setLayoutManager(llm);
-        preferencesRV.setAdapter(mAdapter);
+        rootview =  inflater.inflate(R.layout.fragment_preferences, container, false);
 
         return rootview;
     }
@@ -98,6 +65,36 @@ public class PreferencesFragment extends Fragment implements PreferencesAdapter.
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.preferences);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
 
+        prefsPbar = (ProgressBar) getActivity().findViewById(R.id.prefsPbar);
+        prefsPbar.setVisibility(View.VISIBLE);
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setEndpoint(BaseURL.BASE_URL.toString())
+                .build();
+        PartnersAPI api = adapter.create(PartnersAPI.class);
+        api.partnerCategories("", "", 0, 100, new Callback<JsonObject>() {
+            @Override
+            public void success(JsonObject jsonResponse, Response response) {
+                JsonArray items = jsonResponse.get("items").getAsJsonArray();
+                for (JsonElement categoryItem : items) {
+                    JsonObject category = categoryItem.getAsJsonObject();
+                    PreferenceCategoryEntity prefCat = new PreferenceCategoryEntity(category);
+                    list.add(prefCat);
+
+                }
+                //   RealmList<PreferenceEntity> userPrefs = ((MainActivity) getActivity()).userEntity.getPreferences();
+                preferencesRV = (RecyclerView) rootview.findViewById(R.id.preferences_rv);
+                mAdapter = new PreferencesAdapter(list, R.layout.list_item_preference, PreferencesFragment.this);
+                LinearLayoutManager llm = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+                preferencesRV.setLayoutManager(llm);
+                preferencesRV.setAdapter(mAdapter);
+                prefsPbar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
     }
 
 
@@ -114,13 +111,11 @@ public class PreferencesFragment extends Fragment implements PreferencesAdapter.
 
     @Override
     public void onParentSelected(PreferenceCategoryEntity parent, boolean state) {
-        Toast.makeText(getActivity(),"parent cheched "+state,Toast.LENGTH_SHORT).show();
         // TODO: 13/03/2016 save on api
     }
 
     @Override
     public void onChildSelected(PreferenceCategoryEntity parent, PreferenceEntity child, boolean state) {
-        Toast.makeText(getActivity(),"child cheched "+state,Toast.LENGTH_SHORT).show();
         // TODO: 13/03/2016 save on api
     }
 

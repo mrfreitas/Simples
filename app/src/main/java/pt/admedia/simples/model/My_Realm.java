@@ -52,12 +52,26 @@ public class My_Realm {
         realm.commitTransaction();
     }
 
-    public void setPartners(PartnersEntity partner)
+    public void setPartners(final PartnersEntity partner)
     {
-        // Persist user data
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(partner);
-        realm.commitTransaction();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgRealm) {
+                bgRealm.copyToRealmOrUpdate(partner);
+            }
+        }, null);
+    }
+
+    public void removePartners()
+    {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgRealm) {
+                RealmQuery<PartnersEntity> query = bgRealm.where(PartnersEntity.class);
+                RealmResults<PartnersEntity> pList = query.findAll();
+                pList.clear();
+            }
+        }, null);
     }
 
     public void getAsyncPartners(RealmChangeListener callback)
@@ -71,14 +85,13 @@ public class My_Realm {
     public ArrayList<PartnersEntity> getPartners(String selection)
     {
         RealmQuery<PartnersEntity> query = realm.where(PartnersEntity.class);
-        query.equalTo("seo", selection);
+        if(!selection.equals("todas-as-categorias"))
+            query.equalTo("seo", selection);
         realm.beginTransaction();
         RealmResults<PartnersEntity> pList = query.findAll();
         ArrayList<PartnersEntity> partnersList = new ArrayList<>();
         realm.commitTransaction();
-        for (PartnersEntity partner : pList) {
-            partnersList.add(partner);
-        }
+        partnersList.addAll(pList);
         return partnersList;
     }
 

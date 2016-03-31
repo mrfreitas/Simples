@@ -3,6 +3,7 @@ package pt.admedia.simples;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.app.ProgressDialog;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -15,6 +16,7 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +38,8 @@ import java.util.List;
 
 import pt.admedia.simples.api.BaseURL;
 import pt.admedia.simples.api.UserAPI;
+import pt.admedia.simples.lib.IsOnline;
+import pt.admedia.simples.lib.My_Answers;
 import pt.admedia.simples.lib.Session;
 import pt.admedia.simples.model.My_Realm;
 import pt.admedia.simples.model.UserEntity;
@@ -57,11 +61,11 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
     private DatePickerDialog.OnDateSetListener date;
     private ValidatorFactory validatorFactory;
     private RadioButton genderMale, genderFemale;
-    private ProgressBar pBar;
 
     //Id to identity READ_CONTACTS permission request.
     private static final int REQUEST_READ_CONTACTS = 0;
     public static final String ENDPOINT = BaseURL.BASE_URL.toString();
+    private ProgressDialog progress;
     UserAPI api;
 
     @Override
@@ -70,9 +74,15 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_card);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         validatorFactory = new ValidatorFactory(getApplicationContext());
         assignViews();
+
+        progress=new ProgressDialog(this);
+        progress.setMessage(getResources().getString(R.string.authenticating));
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
 
         // Birth date handler
         myCalendar = Calendar.getInstance();
@@ -118,8 +128,8 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
         requestCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validatorFactory.formValidate()) {
-                    pBar.setVisibility(View.VISIBLE);
+                if (validatorFactory.formValidate() && IsOnline.isOnline(RequestCard.this)) {
+                    progress.show();
                     // Create user account request
                     String firstName = firstNameTv.getText().toString();
                     String lastName = lastNameTv.getText().toString();
@@ -152,7 +162,7 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
 
                         @Override
                         public void failure(RetrofitError error) {
-                            pBar.setVisibility(View.GONE);
+                            progress.dismiss();
                             Toast.makeText(RequestCard.this, getBaseContext().getString(R.string.rc_6) +
                                             " " + getBaseContext().getString(R.string.server_error),
                                     Toast.LENGTH_SHORT).show();
@@ -217,7 +227,6 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
         parishTv = (EditText) findViewById(R.id.parish);
 
         requestCard = (Button) findViewById(R.id.pedir_cartao_button);
-        pBar = (ProgressBar) findViewById(R.id.cardRequest_progress);
 
     }
 
@@ -334,14 +343,17 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
         session.setFaceLogin(true);
         // Persist user
         My_Realm my_realm = new My_Realm(RequestCard.this);
-        my_realm.setUser(new UserEntity(jsonResponse));
+        UserEntity newUser = new UserEntity(jsonResponse);
+        my_realm.setUser(newUser);
         // Login is finished
-        pBar.setVisibility(View.GONE);
-        startMainActivity();
+        progress.dismiss();
+        startMainActivity(newUser);
     }
 
-    private void startMainActivity()
+    private void startMainActivity(UserEntity newUser)
     {
+        My_Answers my_answers = new My_Answers(newUser.getEmail());
+        my_answers.signUp("Email", newUser.getMobile());
         Intent main = new Intent(this, MainActivity.class);
         main.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
