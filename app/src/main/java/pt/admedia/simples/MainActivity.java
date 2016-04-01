@@ -30,6 +30,7 @@ import java.io.File;
 import pt.admedia.simples.api.BaseURL;
 import pt.admedia.simples.api.UserAPI;
 import pt.admedia.simples.fragments.CardFragment;
+import pt.admedia.simples.fragments.PartnerDetailFragment;
 import pt.admedia.simples.fragments.PartnersFragment;
 import pt.admedia.simples.lib.Session;
 import pt.admedia.simples.lib.SimplesPrefs;
@@ -164,16 +165,16 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-         Fragment fragment = null;
+         Fragment mNextFragment = null;
         switch (id) {
             case R.id.partners:
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("isFirstLoad", session.getFirstLoad());
-                fragment = new PartnersFragment();
-                fragment.setArguments(bundle);
+                mNextFragment = new PartnersFragment();
+                mNextFragment.setArguments(bundle);
                 break;
             case R.id.card:
-                fragment = cardFragment();
+                mNextFragment = cardFragment();
                 break;
 /*            case R.id.preferences:
                 fragment = new PreferencesFragment();
@@ -184,9 +185,27 @@ public class MainActivity extends AppCompatActivity
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-        if (fragment != null)
-            fragmentManager.beginTransaction().replace(R.id.frame_container, fragment).commit();
+
+        if (mNextFragment != null){
+            Fragment mCurrentFragment = getSupportFragmentManager().findFragmentById(R.id.frame_container);
+
+            if(mCurrentFragment instanceof PartnerDetailFragment){
+                if(mNextFragment instanceof PartnersFragment)
+                    fragmentManager.popBackStack();
+                else{
+                    clearBackStack();
+                    fragmentManager.beginTransaction().replace(R.id.frame_container, mNextFragment).commit();
+                }
+            }else
+                fragmentManager.beginTransaction().replace(R.id.frame_container, mNextFragment).commit();
+        }
         return true;
+    }
+
+    private void clearBackStack(){
+        if(getSupportFragmentManager().getBackStackEntryCount() > 0)
+            getSupportFragmentManager().popBackStack(getSupportFragmentManager().getBackStackEntryAt(0).getId(),
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     private void firstTime() {
