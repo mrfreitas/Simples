@@ -9,7 +9,6 @@
     <dimen name="divider_height">1dp</dimen>
 
 
-
     <dimen name="icons">45dp</dimen>
 
     <!-- Cards list -->
@@ -60,4 +59,11 @@
     <dimen name="horizontalSpacing">5dp</dimen>
     <dimen name="verticalSpacing">1dp</dimen>
     <dimen name="marginToolbars">3dp</dimen>
+
+    <dimen name="logo_margin">3dp</dimen>
+
+    <dimen name="detail_txt_margin">10dp</dimen>
+    <dimen name="detail_title_margin">5dp</dimen>
+    <dimen name="detail_title_paddingTB">13dp</dimen>
+    <dimen name="detail_contactTxt_margin">5dp</dimen>
 </resources>

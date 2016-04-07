@@ -4,8 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -13,11 +11,12 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by mrfreitas on 11/03/2016.
  */
-public class PartnersEntity extends RealmObject{
+public class PartnersEntity extends RealmObject {
 
     @PrimaryKey
     private String niu;
-    private String title, address, email, seo, img, logo;
+
+    private String title = "", address= "", email= "", seo= "", img= "", logo= "", description= "";
     private int postal_long, postal_code, phone;
     private double lat, lon;
     private RealmList<FeatureEntity> features = new RealmList<>();
@@ -49,6 +48,10 @@ public class PartnersEntity extends RealmObject{
             this.postal_code = partner.get("postal_code").getAsInt();
         if (!partner.get("phone").isJsonNull())
             this.phone = partner.get("phone").getAsInt();
+        if (!partner.get("description").isJsonNull())
+            this.description = partner.get("description").getAsString();
+        else
+            this.description = "";
 
         // Geolocation
         if (!partner.get("geo").isJsonNull()) {
@@ -207,5 +210,12 @@ public class PartnersEntity extends RealmObject{
     }
     public void setAreas(RealmList<AreaEntity> areas) {
         this.areas = areas;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

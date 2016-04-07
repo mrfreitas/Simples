@@ -9,12 +9,9 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import io.realm.RealmList;
 import pt.admedia.simples.R;
 import pt.admedia.simples.lib.Category;
-import pt.admedia.simples.lib.SubCategory;
 import pt.admedia.simples.model.PreferenceCategoryEntity;
 import pt.admedia.simples.model.PreferenceEntity;
 

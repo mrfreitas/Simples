@@ -7,7 +7,8 @@ import io.realm.RealmObject;
 /**
  * Created by mrfreitas on 28/03/2016.
  */
-public class SchedulesEntity extends RealmObject{
+public class SchedulesEntity extends RealmObject {
+
     private String day;
     private String start;
     private String end;

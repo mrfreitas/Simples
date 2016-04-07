@@ -7,7 +7,7 @@ import io.realm.RealmObject;
 /**
  * Created by mrfreitas on 28/03/2016.
  */
-public class FeatureEntity  extends RealmObject{
+public class FeatureEntity  extends RealmObject {
 
     private String name;
     private String description;

@@ -12,6 +12,7 @@ public class PreferenceEntity extends RealmObject {
 
     @PrimaryKey
     private String seo;
+
     private String title;
     private String description;
     private boolean isActive = false;

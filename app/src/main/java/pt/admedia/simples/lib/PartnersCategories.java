@@ -1,7 +1,5 @@
 package pt.admedia.simples.lib;
 
-import io.realm.RealmObject;
-
 /**
  * Created by mrfreitas on 15/03/2016.
  */

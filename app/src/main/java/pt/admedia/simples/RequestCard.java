@@ -16,7 +16,6 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +24,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -207,6 +205,7 @@ public class RequestCard extends AppCompatActivity implements LoaderCallbacks<Cu
         validatorFactory.nameValidate(lastNameTv, true);
 
         mobileTv = (EditText) findViewById(R.id.mobile);
+        validatorFactory.emptyValidate(mobileTv, true);
         validatorFactory.mobileValidate(mobileTv, true);
 
         // Autocomplete field

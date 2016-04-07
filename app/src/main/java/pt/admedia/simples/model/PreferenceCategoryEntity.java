@@ -16,6 +16,7 @@ public class PreferenceCategoryEntity extends RealmObject {
 
     @PrimaryKey
     private String seo;
+
     private String title;
     private String description;
     private RealmList<PreferenceEntity> childPreferences = new RealmList<>();

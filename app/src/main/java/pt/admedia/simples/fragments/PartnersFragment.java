@@ -1,11 +1,13 @@
 package pt.admedia.simples.fragments;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,12 +28,16 @@ import java.util.ArrayList;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import pt.admedia.simples.MainActivity;
+import pt.admedia.simples.PartnerDetails;
 import pt.admedia.simples.R;
+import pt.admedia.simples.SimplesApplication;
 import pt.admedia.simples.adapters.MyRecyclerListAdapter;
 import pt.admedia.simples.api.BaseURL;
 import pt.admedia.simples.api.PartnersAPI;
+import pt.admedia.simples.lib.GridSpacingItemDecoration;
 import pt.admedia.simples.lib.IsOnline;
 import pt.admedia.simples.lib.My_Answers;
+import pt.admedia.simples.lib.SimplesPrefs;
 import pt.admedia.simples.model.My_Realm;
 import pt.admedia.simples.model.PartnersEntity;
 import retrofit.Callback;
@@ -42,7 +48,6 @@ import retrofit.client.Response;
 
 public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.CardActions{
 
-    private static final int DIAL_REQUEST = 1;
     private MyRecyclerListAdapter myListAdapter;
     private ArrayList<PartnersEntity> partnersList = new ArrayList<>();
     private RecyclerView partners_list;
@@ -52,9 +57,14 @@ public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.
     private My_Realm my_realm;
     private boolean loadPositionZero;
     private String[] categoriesList;
-    public PartnersFragment() {
-        // Required empty public constructor
-    }
+
+    // TODO resolve the problem affecting the app wen the android system kills the app for get its resources
+    /*
+     * The app crash if the main activity is referenced on the get online partner function.
+     * With the workaround the app goes to the card fragment and executes the code of the partners fragment
+     */
+
+    public PartnersFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,7 +102,7 @@ public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.
         partnersPbar = (ProgressBar) getActivity().findViewById(R.id.partnersPbar);
         partners_list = (RecyclerView) getActivity().findViewById(R.id.partners_list);
 
-        my_realm = new My_Realm(getContext());
+        my_realm = new My_Realm(getActivity().getBaseContext());
 
         categories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -108,23 +118,12 @@ public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.
             }
         });
         initRecyclerView();
-        if(((MainActivity) getActivity()).session.getFirstLoad() && IsOnline.isOnline(getContext())) {
+        if(((MainActivity) getActivity()).session.getFirstLoad() && IsOnline.isOnline(getActivity().getBaseContext())) {
             filter = "";
             getOnlinePartners();
         }
         else
             getAsyncLocalPartner();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode)
-        {
-            case DIAL_REQUEST:
-                int p = categories.getSelectedItemPosition();
-                getSelectedLocalPartner(categoriesList[p]);
-        }
     }
 
     @Override
@@ -156,14 +155,25 @@ public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.
                 }
                 partnersPbar.setVisibility(View.GONE);
                 myListAdapter.notifyDataSetChanged();
-                ((MainActivity) getActivity()).session.setFirstLoad(false);
+
+                if(getActivity() != null)
+                    ((MainActivity) getActivity()).session.setFirstLoad(false);
+
+                // Workaround
+                // Set first load to shared prefs
+/*                SharedPreferences sharedPRF = getActivity()
+                        .getApplication().getApplicationContext()
+                        .getSharedPreferences(SimplesPrefs.PREFS.toString(), 0);
+                SharedPreferences.Editor editor = sharedPRF.edit();
+                editor.putBoolean("isFirstTime", false);
+                editor.apply();*/
             }
 
             @Override
             public void failure(RetrofitError error) {
                 partnersPbar.setVisibility(View.GONE);
-                Toast.makeText(getContext(), getContext().getString(R.string.rc_4) +
-                                " " + getContext().getString(R.string.server_error),
+                Toast.makeText(getActivity().getBaseContext(), getActivity().getBaseContext().getString(R.string.rc_4)
+                                + " " + getActivity().getBaseContext().getString(R.string.server_error),
                         Toast.LENGTH_SHORT).show();
             }
         });
@@ -187,10 +197,28 @@ public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.
 
     private void initRecyclerView()
     {
+        int rows = 1;
+        if(SimplesApplication.isTablet) {
+            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                rows = 2;
+                partners_list.addItemDecoration(new GridSpacingItemDecoration(2, 20, true));
+            }
+            else {
+                rows = 3;
+                partners_list.addItemDecoration(new GridSpacingItemDecoration(3, 20, true));
+            }
+        }
+        else{
+            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                rows = 2;
+                partners_list.addItemDecoration(new GridSpacingItemDecoration(2, 10, true));
+            }
+        }
+
         myListAdapter = new MyRecyclerListAdapter(getActivity().getApplicationContext(), partnersList,
                 R.layout.t_card, PartnersFragment.this);
         //    myListAdapter.clearData();
-        partners_list.setLayoutManager(new LinearLayoutManager(getContext()));
+        partners_list.setLayoutManager(new GridLayoutManager(getActivity().getBaseContext(), rows));
         partners_list.setAdapter(myListAdapter);
     }
 
@@ -214,10 +242,16 @@ public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.
 
     @Override
     public void onItemClicked(int position) {
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
+        Intent partnerDetail = new Intent(getActivity().getBaseContext(), PartnerDetails.class);
+        SimplesApplication.currentPartner = partnersList.get(position);
+        partnerDetail.putExtra("partner", partnersList.get(position).getNiu());
+        startActivity(partnerDetail);
+        // Animate activity transition
+        getActivity().overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
+    /*    getActivity().getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right, R.animator.slide_in_right, R.animator.slide_out_left)
                 .replace(R.id.frame_container, new PartnerDetailFragment())
                 .addToBackStack("detail")
-                .commit();
+                .commit();*/
     }
 }

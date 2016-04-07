@@ -52,4 +52,28 @@ public class Session {
         return sharedPRF.getBoolean("isFirstTime", true);
     }
 
+    public void setPartnerCategory(int category)
+    {
+        SharedPreferences.Editor editor = sharedPRF.edit();
+        editor.putInt("category", category);
+        editor.apply();
+    }
+
+    public int getPartnerCategory()
+    {
+        return sharedPRF.getInt("category", 0);
+    }
+
+    public void setCurrentPartner(String niu)
+    {
+        SharedPreferences.Editor editor = sharedPRF.edit();
+        editor.putString("niu", niu);
+        editor.apply();
+    }
+
+    public String getCurrentPartner()
+    {
+        return sharedPRF.getString("niu", "");
+    }
+
 }

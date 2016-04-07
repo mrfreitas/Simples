@@ -1,11 +1,11 @@
 package pt.admedia.simples;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,15 +14,16 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.google.gson.JsonObject;
-import com.squareup.picasso.Picasso;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.io.File;
 
@@ -44,8 +45,9 @@ public class MainActivity extends AppCompatActivity
 
     public Session session;
     public UserEntity userEntity;
+    public Toolbar toolbar;
     private TextView userName, userEmail;
-    private ImageView userImage;
+    private CircularImageView userImage;
     private FragmentManager fragmentManager;
 
     @Override
@@ -56,12 +58,13 @@ public class MainActivity extends AppCompatActivity
 
         // Check if the user have a session
         session = new Session(this);
+        session.setCurrentPartner("");
         firstTime();
 
         My_Realm my_realm = new My_Realm(this);
         userEntity = my_realm.getUser();
         if (userEntity != null) {
-            Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+            toolbar = (Toolbar) findViewById(R.id.main_toolbar);
             setSupportActionBar(toolbar);
 
             // Spinner
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity
             spinner.setAdapter(dataAdapter);
 
             // Navigation drawer
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             drawer.addDrawerListener(toggle);
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity
             // Assign user data to it's views
             assignUserData();
 
-            getSupportFragmentManager().addOnBackStackChangedListener(new android.support.v4.app.FragmentManager.OnBackStackChangedListener() {
+            getFragmentManager().addOnBackStackChangedListener(new android.app.FragmentManager.OnBackStackChangedListener() {
                 @Override
                 public void onBackStackChanged() {
                     if (getFragmentManager().getBackStackEntryCount() > 0)
@@ -97,8 +100,24 @@ public class MainActivity extends AppCompatActivity
                 }
             });
 
-            fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.frame_container, cardFragment()).commit();
+            if(toolbar != null)
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (getFragmentManager().getBackStackEntryCount() > 0) {
+                            getFragmentManager().popBackStack();
+                        } else {
+                            if (drawer.isDrawerOpen(GravityCompat.START))
+                                drawer.closeDrawer(GravityCompat.START);
+                            else
+                                drawer.openDrawer(GravityCompat.START);
+                        }
+                    }
+                });
+            fragmentManager = getFragmentManager();
+            if (savedInstanceState == null) {
+                fragmentManager.beginTransaction().replace(R.id.frame_container, cardFragment()).commit();
+            }
         }
         else
             logOut();
@@ -220,7 +239,8 @@ public class MainActivity extends AppCompatActivity
     private void assignView(NavigationView navigationView) {
         userName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.user_name);
         userEmail = (TextView) navigationView.getHeaderView(0).findViewById(R.id.user_email);
-        userImage = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.user_image);
+        userImage = (CircularImageView) navigationView.getHeaderView(0).findViewById(R.id.user_image);
+        userImage.setBorderWidth(4);
     }
 
     private void assignUserData() {
@@ -232,7 +252,7 @@ public class MainActivity extends AppCompatActivity
             userEmail.setText(userEntity.getEmail());
             if (session.getFaceLogin()) {
                 String imgLink = BaseURL.FACE_1.toString() + userEntity.getFaceUserId() + BaseURL.FACE_2.toString();
-                Picasso.with(this).load(imgLink).into(userImage);
+                Glide.with(this).load(imgLink).into(userImage);
             }
         }
     }

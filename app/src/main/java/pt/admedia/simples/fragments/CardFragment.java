@@ -1,12 +1,12 @@
 package pt.admedia.simples.fragments;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +16,16 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.Resource;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -39,18 +47,17 @@ public class CardFragment extends Fragment {
     private String firstName, lastName, cardValDate;
     long cardNumber;
     // Custom target for the picasso image loader
-    private Target target = new Target() {
+    private SimpleTarget<Bitmap> target = new SimpleTarget<Bitmap>(){
         @Override
-        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
-        {
+        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
             try
             {
-                File f = new File(getContext().getCacheDir(), SimplesPrefs.CARD_NAME.toString());
+                File f = new File(getActivity().getBaseContext().getCacheDir(), SimplesPrefs.CARD_NAME.toString());
                 if(!f.exists())
                 {
                     f.createNewFile();
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                    resource.compress(Bitmap.CompressFormat.PNG, 100, bos);
                     byte[] bitmapdata = bos.toByteArray();
 
                     FileOutputStream fos = new FileOutputStream(f);
@@ -58,21 +65,13 @@ public class CardFragment extends Fragment {
                     fos.flush();
                     fos.close();
                 }
-                if(f.exists()) {
-                    cardImage.setImageBitmap(BitmapFactory.decodeFile(f.getPath()));
-                    cardProgress.setVisibility(View.GONE);
-                }
+                cardImage.setImageBitmap(BitmapFactory.decodeFile(f.getPath()));
+                cardProgress.setVisibility(View.GONE);
             }
             catch (IOException e) {}
         }
-
-        @Override
-        public void onBitmapFailed(Drawable errorDrawable) {}
-
-        @Override
-        public void onPrepareLoad(Drawable placeHolderDrawable) {}
-
     };
+
     public CardFragment() {
         // Required empty public constructor
     }
@@ -117,23 +116,53 @@ public class CardFragment extends Fragment {
         categories.setVisibility(View.GONE);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.card);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         cardProgress.setVisibility(View.VISIBLE);
 
         //Card image
-        File f = new File(getContext().getCacheDir(), SimplesPrefs.CARD_NAME.toString());
+        File f = new File(getActivity().getBaseContext().getCacheDir(), SimplesPrefs.CARD_NAME.toString());
         if (f.exists()) {
             cardImage.setImageBitmap(BitmapFactory.decodeFile(f.getPath()));
             cardProgress.setVisibility(View.GONE);
         }
         else {
-            if(IsOnline.isOnline(getContext()))
-                Picasso.with(getContext()).load(BaseURL.CARD_IMG + ((MainActivity) getActivity())
-                        .session.getToken()).into(target);
+            if(IsOnline.isOnline(getActivity().getBaseContext()))
+                Glide.with(getActivity().getBaseContext())
+                        .load(BaseURL.CARD_IMG + ((MainActivity) getActivity()).session.getToken())
+                        .asBitmap()
+                        .into(new BitmapImageViewTarget(cardImage) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                super.setResource(resource);
+                                saveCardImage(resource);
+                            }
+                        });
         }
     }
 
+    private void saveCardImage(Bitmap resource)
+    {
+        try
+        {
+            File f = new File(getActivity().getBaseContext().getCacheDir(), SimplesPrefs.CARD_NAME.toString());
+            if(!f.exists())
+            {
+                f.createNewFile();
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                resource.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                byte[] bitmapdata = bos.toByteArray();
+
+                FileOutputStream fos = new FileOutputStream(f);
+                fos.write(bitmapdata);
+                fos.flush();
+                fos.close();
+            }
+            cardProgress.setVisibility(View.GONE);
+        }
+        catch (IOException e) {}
+
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

@@ -2,9 +2,7 @@ package pt.admedia.simples.adapters;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
@@ -33,10 +32,7 @@ public class MyRecyclerListAdapter extends RecyclerView.Adapter<MyRecyclerListAd
     private Context mContext;
     private int resLayout;
     private String partnerImgBaseUrl, logoUrl;
-    private LinearLayout.LayoutParams discountTvParams;
     private CardActions cardActions;
-    float dpHeight, dpWidth;
-    double ratio = 1.50;
     int customHeight;
 //    View view;
 
@@ -47,21 +43,12 @@ public class MyRecyclerListAdapter extends RecyclerView.Adapter<MyRecyclerListAd
         this.mContext = mContext;
         this.elements = items;
         this.resLayout = textViewResourceId;
-        partnerImgBaseUrl = BaseURL.PARTNERS_IMG.toString();
+        //TODO verificar poque com as imagens redimencionadas está a estragar isto
+       // partnerImgBaseUrl = BaseURL.PARTNERS_IMG.toString();
+        partnerImgBaseUrl = BaseURL.IMAGE_URL.toString();
         logoUrl = BaseURL.LOGO_IMG.toString();
-        // Layout params initialization
-        discountTvParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        discountTvParams.setMargins(2,2,2,2);
         this.cardActions = cardActions;
-        DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
-        this.dpHeight = displayMetrics.heightPixels / displayMetrics.density;
-        this.dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        this.customHeight = (int) Math.round((dpWidth/ratio) * displayMetrics.density);
-
-
-        // Layout inflater initialization
-//        inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.customHeight = SimplesApplication.customHeight;
 
 
     }
@@ -80,24 +67,18 @@ public class MyRecyclerListAdapter extends RecyclerView.Adapter<MyRecyclerListAd
         {
             holder.partnerName.setText(partner.getTitle());
             holder.locationTitle.setText(partner.getAddress().trim());
-//            holder.contact.setText(Integer.toString(partner.getPhone()));
-//
-//            // Font awesome
-//            holder.locationIcon.setTypeface(SimplesApplication.fontAwesome);
-//            holder.contactIcon.setTypeface(SimplesApplication.fontAwesome);
-//            holder.descriptionTxt.setText(partner.);
-            //  holder.presentation_image.requestLayout().getLayoutParams().height = Math.round(customHeight);
+
             holder.presentation_image.getLayoutParams().height = customHeight;
-            holder.presentation_image.requestLayout();
 
-
-            Picasso.with(mContext)
+            Glide.with(mContext)
                     .load(partnerImgBaseUrl+partner.getImg())
                     .placeholder(R.drawable.placeholder)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .error(R.drawable.placeholder)
                     .into(holder.presentation_image);
-            Picasso.with(mContext)
+            Glide.with(mContext)
                     .load(logoUrl + partner.getLogo())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(holder.logo);
 
             RealmList<DiscountEntity> discounts = partner.getDiscounts();
@@ -124,35 +105,6 @@ public class MyRecyclerListAdapter extends RecyclerView.Adapter<MyRecyclerListAd
                     }
                     isFirst = false;
                 }
-//                TextView discountTV = new TextView(mContext);
-//                discountTV.setText("\u2022" +" "+ discountObj.getDescription());
-//                discountTV.setLayoutParams(discountTvParams);
-//                discountTV.setTextAppearance(mContext, android.R.style.TextAppearance_DeviceDefault_Small);
-//                discountTV.setTextColor(ContextCompat.getColor(mContext, R.color.text_tittle));
-//                holder.discounts.addView(discountTV);
-////                view = inflater.inflate(R.layout.t_divider_s, null);
-////                holder.discounts.addView(view);
-//
-//                // Listeners
-//                holder.contact.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        cardActions.onPhoneClicked(position);
-//                    }
-//                });
-//
-//                // Text clickable effect
-//                holder.contact.setOnTouchListener(new View.OnTouchListener() {
-//                    @Override
-//                    public boolean onTouch(View v, MotionEvent event) {
-//                        if (event.getAction() == MotionEvent.ACTION_DOWN)
-//                            ((TextView)v).setTextColor(ContextCompat.getColor(mContext, R.color.colorHighlight));
-//                        else if (event.getAction() == MotionEvent.ACTION_UP ||
-//                                event.getAction() == MotionEvent.ACTION_CANCEL)
-//                            ((TextView)v).setTextColor(ContextCompat.getColor(mContext, R.color.text_tittle));
-//                        return false;
-//                    }
-//                });
             }
             // Listeners
             holder.partnerListItem.setOnClickListener(new View.OnClickListener() {

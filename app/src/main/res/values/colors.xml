@@ -24,7 +24,7 @@
     <!-- text colors -->
     <color name="text_color_1">#ff757575</color>
     <color name="text_color">#505050</color>
-    <color name="text_tittle">#f00f0f0f</color>
+    <color name="text_tittle">#f0181818</color>
 
     <!-- -->
     <color name="react_emotion_5">#1a661e</color>

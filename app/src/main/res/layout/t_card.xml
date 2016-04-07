@@ -26,10 +26,9 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:scaleType="fitXY"
                     android:id="@+id/presentation_image"
-                    android:adjustViewBounds="true"
                     android:src="@drawable/placeholder"/>
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -43,10 +42,10 @@
                         android:layout_marginTop="10dp"
                         android:paddingTop="3dp"
                         android:paddingBottom="3dp"
-                        android:layout_marginRight="3dp"
-                        android:layout_marginEnd="3dp"
-                        android:layout_marginStart="3dp"
-                        android:layout_marginLeft="3dp"
+                        android:layout_marginRight="@dimen/logo_margin"
+                        android:layout_marginEnd="@dimen/logo_margin"
+                        android:layout_marginStart="@dimen/logo_margin"
+                        android:layout_marginLeft="@dimen/logo_margin"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true" />
                     <TextView
@@ -84,113 +83,6 @@
                         android:layout_toLeftOf="@+id/logo"
                         android:layout_toStartOf="@+id/logo" />
                 </RelativeLayout>
-                <!--<RelativeLayout-->
-                    <!--android:id="@+id/partner_info"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:orientation="vertical"-->
-                    <!--android:paddingRight="15dp"-->
-                    <!--android:paddingLeft="15dp"-->
-                    <!--android:paddingTop="7dp"-->
-                    <!--android:paddingBottom="7dp"-->
-                    <!--android:layout_below="@+id/presentation_image">-->
-                    <!--<TextView-->
-                        <!--android:text="@string/icon_marker"-->
-                        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:id="@+id/locationIcon"-->
-                        <!--android:textColor="@color/text_tittle"-->
-                        <!--android:paddingTop="7dp"-->
-                        <!--android:ellipsize="end"-->
-                        <!--android:singleLine="true"-->
-                        <!--/>-->
-                    <!--<TextView-->
-                        <!--android:text="Morada"-->
-                        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-                        <!--android:layout_width="263dp"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:id="@+id/locationTitle"-->
-                        <!--android:textColor="@color/text_tittle"-->
-                        <!--android:gravity="center_vertical"-->
-                        <!--android:clickable="true"-->
-                        <!--android:padding="@dimen/textPadding"-->
-                        <!--android:ellipsize="end"-->
-                        <!--android:singleLine="true"-->
-                        <!--android:layout_marginStart="5dp"-->
-                        <!--android:layout_marginLeft="5dp"-->
-                        <!--android:layout_alignParentTop="true"-->
-                        <!--android:layout_toRightOf="@+id/locationIcon" />-->
-                    <!--<TextView-->
-                        <!--android:text="@string/icon_phone"-->
-                        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:id="@+id/contactIcon"-->
-                        <!--android:textColor="@color/text_tittle"-->
-                        <!--android:paddingTop="13dp"-->
-                        <!--android:ellipsize="end"-->
-                        <!--android:singleLine="true"-->
-                        <!--android:layout_below="@+id/locationIcon"-->
-                         <!--/>-->
-                    <!--<TextView-->
-                        <!--android:text="Contacto"-->
-                        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:clickable="true"-->
-                        <!--android:id="@+id/contactTitle"-->
-                        <!--android:textColor="@color/text_tittle"-->
-                        <!--android:gravity="center_vertical"-->
-                        <!--android:padding="@dimen/textPadding"-->
-                        <!--android:ellipsize="end"-->
-                        <!--android:singleLine="true"-->
-                        <!--android:layout_marginStart="5dp"-->
-                        <!--android:layout_marginLeft="5dp"-->
-                        <!--android:layout_marginBottom="5dp"-->
-                        <!--android:layout_below="@+id/locationTitle"-->
-                        <!--android:layout_alignLeft="@+id/locationTitle"-->
-                        <!--android:layout_alignStart="@+id/locationTitle" />-->
-
-                    <!--<include-->
-                        <!--layout="@layout/t_divider"-->
-                        <!--android:id="@+id/div"-->
-                        <!--android:layout_marginTop="5dp"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height= "@dimen/divider_height"-->
-                        <!--android:layout_below="@+id/contactTitle"/>-->
-                    <!--<TextView-->
-                        <!--android:text="Descontos:"-->
-                        <!--android:textAllCaps="true"-->
-                        <!--android:layout_marginTop="5dp"-->
-                        <!--android:layout_marginLeft="@dimen/card_padding"-->
-                        <!--android:layout_marginEnd="@dimen/card_padding"-->
-                        <!--android:layout_marginStart="@dimen/card_padding"-->
-                        <!--android:layout_marginRight="@dimen/card_padding"-->
-                        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:id="@+id/descriptionTitle"-->
-                        <!--android:textColor="@color/text_tittle"-->
-                        <!--android:gravity="center_vertical"-->
-                        <!--android:padding="@dimen/textPadding"-->
-                        <!--android:layout_below="@+id/div"-->
-                        <!--/>-->
-                    <!--<LinearLayout-->
-                        <!--android:id="@+id/discounts"-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:orientation="vertical"-->
-                        <!--android:layout_marginTop="2dp"-->
-                        <!--android:layout_marginBottom="3dp"-->
-                        <!--android:paddingLeft="10dp"-->
-                        <!--android:paddingRight="10dp"-->
-                        <!--android:paddingStart="10dp"-->
-                        <!--android:paddingEnd="10dp"-->
-                        <!--android:paddingBottom="2dp"-->
-                        <!--android:layout_below="@+id/descriptionTitle">-->
-                    <!--</LinearLayout>-->
-                <!--</RelativeLayout>-->
             </RelativeLayout>
 
             <TextView

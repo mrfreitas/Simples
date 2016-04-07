@@ -23,11 +23,19 @@ android {
         applicationId "pt.admedia.simples"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 1
-        versionName "0.4"
+        versionCode 1001
+        versionName "1.1"
         multiDexEnabled true
     }
 
+    signingConfigs {
+        debug {
+            storeFile file(project.property("MyApp.signing"))
+            storePassword project.property("MyApp.signing.password")
+            keyAlias project.property("MyApp.signing.alias")
+            keyPassword project.property("MyApp.signing.password")
+        }
+    }
 
     buildTypes {
         release {
@@ -54,11 +62,11 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.2.1'
     compile 'com.android.support:support-v4:23.2.1'
     compile 'com.google.android.gms:play-services:8.1.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'io.realm:realm-android:0.87.5'
     compile 'com.google.code.gson:gson:2.4'
-    compile 'com.pkmmte.view:circularimageview:1.1'
+    compile 'com.mikhaellopez:circularimageview:3.0.2'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    compile 'com.github.bumptech.glide:glide:3.5.2'
 }

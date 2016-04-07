@@ -69,6 +69,7 @@
     <string name="title_activity_main">Simples</string>
     <string name="title_activity_request_card">Pedir cartão</string>
     <string name="title_activity_first_time">Simples</string>
+    <string name="title_activity_partner_detail"></string>
 
     <!--Categories-->
 
@@ -150,6 +151,7 @@
     <!-- Font Awesome-->
     <string name="icon_marker">&#xf041;</string>
     <string name="icon_phone">&#xf095;</string>
+    <string name="icon_envelop">&#xf0e0;</string>
     <string name="icon_gift">&#xf06b;</string>
 
     <!-- Validation Strings -->
@@ -201,4 +203,5 @@
         <item>desporto</item>
         <item>casa-e-decoracao</item>
     </string-array>
+
 </resources>

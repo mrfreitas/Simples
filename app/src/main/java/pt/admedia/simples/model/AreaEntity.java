@@ -7,7 +7,8 @@ import io.realm.RealmObject;
 /**
  * Created by mrfreitas on 28/03/2016.
  */
-public class AreaEntity extends RealmObject{
+public class AreaEntity extends RealmObject {
+
     private String name;
     private String seo;
     private String description;

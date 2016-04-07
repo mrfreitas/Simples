@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,27 +12,36 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="pt.admedia.simples.FirstTime"
     tools:showIn="@layout/activity_first_time">
-    <!-- Login progress -->
-    <!--<ProgressBar-->
-        <!--android:id="@+id/first_progress"-->
-        <!--style="?android:attr/progressBarStyleLarge"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="8dp"-->
-        <!--android:translationZ="2dp"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:visibility="gone" />-->
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:id="@+id/login_spl_logo"
-        android:src="@drawable/simpleslogo"
-        android:layout_gravity="center_horizontal"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/details_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        >
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <!-- Login progress -->
+        <!--<ProgressBar-->
+            <!--android:id="@+id/first_progress"-->
+            <!--style="?android:attr/progressBarStyleLarge"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginBottom="8dp"-->
+            <!--android:translationZ="2dp"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:visibility="gone" />-->
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:id="@+id/login_spl_logo"
+            android:src="@drawable/simpleslogo"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
 
-    <RelativeLayout
+        <RelativeLayout
         android:id="@+id/email_login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -102,6 +112,6 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
     </RelativeLayout>
-
-
+    </RelativeLayout>
+    </android.support.v4.widget.NestedScrollView>
 </RelativeLayout>
