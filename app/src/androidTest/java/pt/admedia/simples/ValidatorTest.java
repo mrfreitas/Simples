@@ -8,7 +8,9 @@ public class ValidatorTest {
 
     @Test
     public void postalCodeValidator() {
-        PostalCodeValidator pv= new PostalCodeValidator();
-        pv.v
+//        PostalCodeValidator pv= new PostalCodeValidator();
+//        pv.v
+
+
     }
 }
