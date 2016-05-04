@@ -57,6 +57,7 @@ public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.
     private My_Realm my_realm;
     private boolean loadPositionZero;
     private String[] categoriesList;
+    private Context mContext;
 
     // TODO resolve the problem affecting the app wen the android system kills the app for get its resources
     /*
@@ -118,7 +119,7 @@ public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.
             }
         });
         initRecyclerView();
-        if(((MainActivity) getActivity()).session.getFirstLoad() && IsOnline.isOnline(getActivity().getBaseContext())) {
+        if(((MainActivity) getActivity()).session.getFirstLoad() && IsOnline.isOnline(getActivity())) {
             filter = "";
             getOnlinePartners();
         }
@@ -129,6 +130,7 @@ public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mContext = context;
     }
 
     @Override
@@ -172,9 +174,10 @@ public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.
             @Override
             public void failure(RetrofitError error) {
                 partnersPbar.setVisibility(View.GONE);
-                Toast.makeText(getActivity().getBaseContext(), getActivity().getBaseContext().getString(R.string.rc_4)
-                                + " " + getActivity().getBaseContext().getString(R.string.server_error),
-                        Toast.LENGTH_SHORT).show();
+                if(isAdded())
+                    Toast.makeText(mContext, mContext.getString(R.string.rc_4)
+                                    + " " + mContext.getString(R.string.server_error),
+                            Toast.LENGTH_SHORT).show();
             }
         });
     }
