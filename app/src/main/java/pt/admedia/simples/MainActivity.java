@@ -40,6 +40,7 @@ import retrofit.RestAdapter;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+@SuppressWarnings("ConstantConditions")
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -55,18 +56,23 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
+        fragmentManager = getFragmentManager();
 
         // Check if the user have a session
         session = new Session(this);
         session.setCurrentPartner("");
-        firstTime();
+
+        // Set action bar
+        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+
+        // If the app do not have any state saved check if the user is logged in
+        if (savedInstanceState == null)
+            firstTime();
 
         My_Realm my_realm = new My_Realm(this);
         userEntity = my_realm.getUser();
         if (userEntity != null) {
-            toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-            setSupportActionBar(toolbar);
-
             // Spinner
             Spinner spinner = (Spinner)findViewById(R.id.categories);
             ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, R.layout.categories,
@@ -114,7 +120,6 @@ public class MainActivity extends AppCompatActivity
                         }
                     }
                 });
-            fragmentManager = getFragmentManager();
             if (savedInstanceState == null) {
                 fragmentManager.beginTransaction().replace(R.id.frame_container, cardFragment()).commit();
             }
@@ -194,12 +199,19 @@ public class MainActivity extends AppCompatActivity
 
     private void firstTime() {
         Log.i("TOKEN", session.getToken());
-        if (session.getToken().equals("")) {
+        if (session.getToken().equals("") && !session.getWaitingPayment()) {
             Intent firstTime = new Intent(this, FirstTime.class);
             firstTime.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             firstTime.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             firstTime.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(firstTime);
+            this.overridePendingTransition(0, 0);
+        }else if(session.getWaitingPayment()){
+            Intent paymentData = new Intent(this, PaymentData.class);
+            paymentData.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            paymentData.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            paymentData.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            startActivity(paymentData);
             this.overridePendingTransition(0, 0);
         }
     }
@@ -213,7 +225,7 @@ public class MainActivity extends AppCompatActivity
         api.logOut(token, new Callback<JsonObject>() {
             @Override
             public void success(JsonObject jsonResponse, Response response) {
-                // TODO move card deletion, clear data, clear data base, to here
+                // TODO clear data base here
             }
             @Override
             public void failure(RetrofitError error) {
@@ -221,8 +233,10 @@ public class MainActivity extends AppCompatActivity
         });
         // Card deletion
         File f = new File(getCacheDir(), SimplesPrefs.CARD_NAME.toString());
-        if (f.exists())
+        if (f.exists()) {
+            //noinspection ResultOfMethodCallIgnored
             f.delete();
+        }
         // Clear session
         session.setToken("");
         if (session.getFaceLogin()) {

@@ -1,0 +1,166 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- Login progress -->
+<!--    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />-->
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/login_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:background="@color/white">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/mb_image_height"
+                android:id="@+id/mb_image"
+                android:src="@drawable/multibanco_s"
+                android:layout_margin="10dp"
+                android:minWidth="300dp"
+                android:layout_gravity="center"
+                android:contentDescription="Pagamento deverá ser efectuado no Multi Banco" />
+            <include
+                layout="@layout/t_divider"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:id="@+id/div"
+                android:layout_width="match_parent"
+                android:layout_height= "@dimen/divider_height" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp"
+                >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/text_color"
+                    android:textAllCaps="true"
+                    android:text="@string/entity"
+                    android:textSize="@dimen/payment_title"
+                    android:id="@+id/entity"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginTop="10dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingStart="5dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="@dimen/payment_tx"
+                    android:textColor="@color/text_color"
+                    android:id="@+id/tv_entity" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/text_color"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/payment_title"
+                    android:text="@string/reference"
+                    android:id="@+id/referencia"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginTop="10dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingStart="5dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="@dimen/payment_tx"
+                    android:textColor="@color/text_color"
+                    android:id="@+id/tv_reference" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/text_color"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/payment_title"
+                    android:text="@string/value_title"
+                    android:id="@+id/valor"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginTop="10dp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingStart="5dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="@dimen/payment_tx"
+                    android:textColor="@color/text_color"
+                    android:id="@+id/tv_value" />
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="@dimen/warning_payment_tx"
+                android:textColor="@color/text_color"
+                android:text="@string/warning_payment"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:paddingLeft="5dp"
+                android:paddingStart="5dp"
+                android:paddingRight="5dp"
+                android:paddingEnd="5dp"
+                android:id="@+id/tv_warning" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="@dimen/warning_payment_tx"
+                android:textColor="@color/text_color"
+                android:text="@string/warning_continue"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:paddingLeft="5dp"
+                android:paddingStart="5dp"
+                android:paddingRight="5dp"
+                android:paddingEnd="5dp"
+                android:id="@+id/tv_texto" />
+            <Button
+                android:id="@+id/payment_bt"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/login_button"
+                android:textColor="@color/white"
+                android:text="@string/my_continue"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

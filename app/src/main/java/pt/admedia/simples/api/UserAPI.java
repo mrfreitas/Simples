@@ -23,11 +23,11 @@ public interface UserAPI {
     void loginFace(@Query("id") String id, Callback<JsonObject> response);
 
     @FormUrlEncoded
-    @POST("/login/register")
-    void loginRegister(@Field("firstname") String firstName,
+    @POST("/lead/mobile")
+    void leadMobile(@Field("firstname") String firstName,
                        @Field("lastname") String lastName,
                        @Field("sex") String sex,
-                       @Field("faceuser") String faceId,
+                       @Field("facebookuser") String faceId,
                        @Field("birthday") String birth,
                        @Field("mobile") int phone,
                        @Field("email") String email,

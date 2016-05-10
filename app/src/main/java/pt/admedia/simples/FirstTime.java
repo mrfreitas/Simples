@@ -23,11 +23,7 @@ import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import pt.admedia.simples.api.BaseURL;
@@ -87,6 +83,7 @@ public class FirstTime extends AppCompatActivity {
             public void onClick(View v) {
                 Intent requestCard = new Intent(FirstTime.this, RequestCard.class);
                 startActivity(requestCard);
+                overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
             }
         });
 
@@ -96,14 +93,24 @@ public class FirstTime extends AppCompatActivity {
             public void onClick(View v) {
                 Intent emailLogin = new Intent(FirstTime.this, Login.class);
                 startActivity(emailLogin);
+                overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
+            }
+        });
+
+        // Click listener to fire the login on the facebook widget
+        customFBBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                faceLoginBt.performClick();
             }
         });
 
         faceLoginBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progress.show();
-
+                boolean isLoggedIn = AccessToken.getCurrentAccessToken() != null;
+                if(!isLoggedIn)
+                    progress.show();
             }
         });
         // Login/register with facebook
@@ -155,35 +162,6 @@ public class FirstTime extends AppCompatActivity {
         faceLoginBt.setReadPermissions(permissionNeeds);
     }
 
-    private void requestAuthorization()
-    {
-        String user = SimplesPrefs.USER.toString();
-        String pass = SimplesPrefs.PASS.toString();
-
-        // Create user account request
-        RestAdapter adapter = new RestAdapter.Builder()
-                .setEndpoint(BaseURL.BASE_URL.toString())
-                .build();
-        SimplesBaseAPI api = adapter.create(SimplesBaseAPI.class);
-        api.login(user, pass, new Callback<JsonObject>() {
-            @Override
-            public void success(JsonObject jsonResponse, Response response) {
-                // Save user session
-                Session session = new Session(FirstTime.this);
-                if (jsonResponse.has("token"))
-                    session.setToken(jsonResponse.get("token").getAsString());
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                /*
-                 * This request shouldn't show ani message to the user
-                 */
-            }
-        });
-
-    }
-
     private void serverLoginFace(final AccessToken accessToken)
     {
         String faceUserId = accessToken.getUserId();
@@ -199,11 +177,12 @@ public class FirstTime extends AppCompatActivity {
                  * If the user do not exist (value = 0) on the simples platform, then proceed with the
                  * registration on the simples platform. If the user already exist, the registration process ends.
                  */
-                if (status.get("value").getAsInt() == 0) {
+                int value = status.get("value").getAsInt();
+                if (value == 0) {
                     GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                         @Override
                         public void onCompleted(JSONObject faceUserData, GraphResponse response) {
-                            loginRegister(faceUserData);
+                            mobileLeadActivity(faceUserData);
                         }
                     });
                     Bundle parameters = new Bundle();
@@ -226,21 +205,20 @@ public class FirstTime extends AppCompatActivity {
         });
     }
 
-    private void loginRegister(JSONObject faceUserData) {
-        String firstName= "", lastName= "", email= "", faceId= "", birthDate= "", gender = "", sex = "";
-        String address = "", region = "";
-        int postal_long = 0, code = 0;
+    private void mobileLeadActivity(JSONObject faceUserData) {
+        String gender = "";
+        Bundle faceData = new Bundle();
         try {
             if (faceUserData.has("first_name"))
-                firstName = faceUserData.getString("first_name");
+                faceData.putString("firstName", faceUserData.getString("first_name"));
             if (faceUserData.has("last_name"))
-                lastName = faceUserData.getString("last_name");
+                faceData.putString("lastName", faceUserData.getString("last_name"));
             if (faceUserData.has("email"))
-                email = faceUserData.getString("email");
+                faceData.putString("email", faceUserData.getString("email"));
             if (faceUserData.has("id"))
-                faceId = faceUserData.getString("id");
+                faceData.putString("id",faceUserData.getString("id"));
             if (faceUserData.has("birthday"))
-                birthDate = faceUserData.getString("birthday");
+                faceData.putString("birthDate", faceUserData.getString("birthday"));
             if (faceUserData.has("gender"))
                 gender = faceUserData.getString("gender");
         }
@@ -249,34 +227,20 @@ public class FirstTime extends AppCompatActivity {
                             " " + getBaseContext().getString(R.string.server_error),
                     Toast.LENGTH_SHORT).show();
         }
-
         if(gender.equals("male"))
-            sex = "m";
-        else if(sex.equals("female"))
-            sex = "f";
+            faceData.putString("sex", "m");
+        else if(gender.equals("female"))
+            faceData.putString("sex", "f");
 
-        birthDate = convertDate(birthDate);
         // At this time is not possible to get the mobile from facebook api
-        int phone = 0;
-        RestAdapter adapter = new RestAdapter.Builder()
-                .setEndpoint(BaseURL.BASE_URL.toString())
-                .build();
-        UserAPI api = adapter.create(UserAPI.class);
-        api.loginRegister(firstName, lastName, sex, faceId, birthDate, phone, email, address, postal_long, code, region, new Callback<JsonObject>() {
-            @Override
-            public void success(JsonObject jsonResponse, Response response) {
-                faceServerSuccess(jsonResponse, false);
-            }
+        faceData.putInt("phone", 0);
 
-            @Override
-            public void failure(RetrofitError error) {
-                Toast.makeText(FirstTime.this, getBaseContext().getString(R.string.rc_2) +
-                                " " + getBaseContext().getString(R.string.server_error),
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        progress.dismiss();
 
-
+        Intent requestCard = new Intent(FirstTime.this, RequestCard.class);
+        requestCard.putExtras(faceData);
+        startActivity(requestCard);
+        overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
     }
 
     private void startMainActivity()
@@ -286,19 +250,6 @@ public class FirstTime extends AppCompatActivity {
         main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         main.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(main);
-    }
-
-    private String convertDate(String stringDate)
-    {
-        DateFormat originalFormat = new SimpleDateFormat("dd/mm/yyyy");
-        DateFormat targetFormat = new SimpleDateFormat("yyyy-mm-dd");
-        Date date = null;
-        try {
-            date = originalFormat.parse(stringDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return targetFormat.format(date);
     }
 
     private void faceServerSuccess(JsonObject jsonResponse, boolean isLogin)

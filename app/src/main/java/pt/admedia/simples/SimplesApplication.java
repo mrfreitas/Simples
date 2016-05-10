@@ -34,8 +34,6 @@ public class SimplesApplication extends Application {
 
     public static boolean isTablet = false;
     public static Typeface fontAwesome;
-    private float dpHeight, dpWidth;
-    private double ratio = 1.50; // racio 3:2
     public static int customHeight, customHeightDetails;
     public static PartnersEntity currentPartner = null;
 
@@ -56,24 +54,8 @@ public class SimplesApplication extends Application {
         Session session = new Session(this);
         session.setFirstLoad(true);
         session.setPartnerCategory(0);
-
         // Calculate the height for images
-        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
-        this.dpHeight = displayMetrics.heightPixels / displayMetrics.density;
-        this.dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        if(!isTablet)
-            customHeight = (int) Math.round((dpWidth/ratio) * displayMetrics.density);
-        else {
-            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-                customHeight = (int) Math.round(((dpWidth / ratio) * displayMetrics.density) / 2);
-            else
-                customHeight = (int) Math.round(((dpHeight / ratio) * displayMetrics.density) / 2);
-        }
-
-        customHeightDetails = (int) Math.round(((dpWidth/ratio) * displayMetrics.density));
-
-
-
+        calculateHeight();
     }
 
     protected void attachBaseContext(Context base) {
@@ -81,7 +63,7 @@ public class SimplesApplication extends Application {
         MultiDex.install(this);
     }
 
-    public void printHasKey(){
+/*    public void printHasKey(){
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
                     "pt.admedia.simples",
@@ -96,7 +78,7 @@ public class SimplesApplication extends Application {
         } catch (NoSuchAlgorithmException e) {
 
         }
-    }
+    }*/
 
     public Realm buildDatabase(){
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this).build();
@@ -110,8 +92,7 @@ public class SimplesApplication extends Application {
                 //Realm file has been deleted.
                 return Realm.getInstance(realmConfiguration);
             } catch (Exception ex){
-                throw ex;
-                //No Realm file to remove.
+                return null;
             }
         }
     }
@@ -130,5 +111,22 @@ public class SimplesApplication extends Application {
         }
         else
             isOnline = false;
+    }
+
+    private void calculateHeight(){
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        double ratio = 1.50;
+        if(!isTablet)
+            customHeight = (int) Math.round((dpWidth / ratio) * displayMetrics.density);
+        else {
+            if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+                customHeight = (int) Math.round(((dpWidth / ratio) * displayMetrics.density) / 2);
+            else
+                customHeight = (int) Math.round(((dpHeight / ratio) * displayMetrics.density) / 2);
+        }
+
+        customHeightDetails = (int) Math.round(((dpWidth / ratio) * displayMetrics.density));
     }
 }

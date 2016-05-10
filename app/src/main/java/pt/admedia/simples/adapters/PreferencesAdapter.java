@@ -82,6 +82,7 @@ public class PreferencesAdapter extends RecyclerView.Adapter<PreferencesAdapter.
         return elements.size();
     }
 
+    @SuppressWarnings("ConstantConditions")
     private PreferenceCategoryEntity getParentCategory(String childId){
         for (Object ro : elements){
             if(ro instanceof Category){

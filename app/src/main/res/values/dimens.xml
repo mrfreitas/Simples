@@ -7,8 +7,7 @@
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="divider_height">1dp</dimen>
-
-
+    <dimen name="btn_radius">7dp</dimen>
     <dimen name="icons">45dp</dimen>
 
     <!-- Cards list -->
@@ -59,11 +58,19 @@
     <dimen name="horizontalSpacing">5dp</dimen>
     <dimen name="verticalSpacing">1dp</dimen>
     <dimen name="marginToolbars">3dp</dimen>
-
     <dimen name="logo_margin">3dp</dimen>
-
     <dimen name="detail_txt_margin">10dp</dimen>
     <dimen name="detail_title_margin">5dp</dimen>
     <dimen name="detail_title_paddingTB">13dp</dimen>
     <dimen name="detail_contactTxt_margin">5dp</dimen>
+
+    <!--Payment screen dimens-->
+    <dimen name="mb_image_height">10dp</dimen>
+    <dimen name="warning_payment_tx">14sp</dimen>
+    <dimen name="payment_title">14sp</dimen>
+    <dimen name="payment_tx">14sp</dimen>
+    <!--Card fragment dimens-->
+    <dimen name="card_image_height">194dp</dimen>
+    <dimen name="card_title">15sp</dimen>
+    <dimen name="card_title_tx">15sp</dimen>
 </resources>

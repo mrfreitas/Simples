@@ -11,11 +11,11 @@
         android:padding="10dp">
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/card_image_height"
             android:id="@+id/card_image"
+            android:src="@drawable/cartao_simples"
             android:layout_margin="10dp"
             android:minWidth="300dp"
-            android:minHeight="194dp"
             android:layout_gravity="center" />
         <include
             layout="@layout/t_divider"
@@ -38,7 +38,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
+                android:textSize="@dimen/card_title"
                 android:textColor="@color/text_color"
                 android:textAllCaps="true"
                 android:text="@string/p_name_title"
@@ -49,6 +49,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/card_title_tx"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/text_color"
                 android:text="@string/p_name"
@@ -57,7 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="@dimen/card_title"
                 android:textColor="@color/text_color"
                 android:textAllCaps="true"
                 android:text="@string/p_cardNumber_title"
@@ -67,6 +68,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/card_title_tx"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/text_color"
                 android:text="@string/p_cardNumber"
@@ -75,7 +77,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:textSize="20sp"
+                android:textSize="@dimen/card_title"
                 android:textColor="@color/text_color"
                 android:textAllCaps="true"
                 android:text="@string/p_valDate_title"
@@ -85,6 +87,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/card_title_tx"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/text_color"
                 android:text="@string/p_valDate"

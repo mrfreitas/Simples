@@ -2,6 +2,9 @@ package pt.admedia.simples.lib;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
+
+import com.google.gson.JsonObject;
 
 /**
  * Created by mrfreitas on 09/03/2016.
@@ -76,4 +79,40 @@ public class Session {
         return sharedPRF.getString("niu", "");
     }
 
+    public void setWaitingPayment(boolean isWaitingPayment)
+    {
+        SharedPreferences.Editor editor = sharedPRF.edit();
+        editor.putBoolean("isWaitingPayment", isWaitingPayment);
+        editor.apply();
+    }
+
+    public boolean getWaitingPayment()
+    {
+        return sharedPRF.getBoolean("isWaitingPayment", false);
+    }
+
+    public void setPaymentData(JsonObject paymentData) {
+            SharedPreferences.Editor editor = sharedPRF.edit();
+        if (!paymentData.get("Referencia").isJsonNull())
+                editor.putString("reference", paymentData.get("Referencia").getAsString());
+        if (!paymentData.get("Entidade").isJsonNull())
+                editor.putString("entity", paymentData.get("Entidade").getAsString());
+        if (!paymentData.get("Valor").isJsonNull())
+                editor.putString("value", paymentData.get("Valor").getAsString());
+        editor.apply();
+    }
+
+    public String getPaymentEntity()
+    {
+        return sharedPRF.getString("entity", "");
+    }
+
+    public String getPaymentReference()
+    {
+        return sharedPRF.getString("reference", "");
+    }
+    public String getPaymentValue()
+    {
+        return sharedPRF.getString("value", "");
+    }
 }

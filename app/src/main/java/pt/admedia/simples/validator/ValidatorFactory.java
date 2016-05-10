@@ -90,13 +90,11 @@ public class ValidatorFactory
 
     public void mobileValidate(TextView v , boolean addToForm)
     {
-        if(!v.getText().toString().equals("")) {
-            Validator mobileValidator = new Validator(v);
-            mobileValidator.addValidator(new MobileValidator(this.context.getResources().getString(R.string.mobile_validation)));
-            v.setOnFocusChangeListener(mobileValidator);
-            if (addToForm)
-                formValidator.addValidates(mobileValidator);
-        }
+        Validator mobileValidator = new Validator(v);
+        mobileValidator.addValidator(new MobileValidator(this.context.getResources().getString(R.string.mobile_validation)));
+        v.setOnFocusChangeListener(mobileValidator);
+        if (addToForm)
+            formValidator.addValidates(mobileValidator);
     }
 
     public void rGroupValidate(RadioGroup group, RadioButton lastRButton, boolean addToForm)

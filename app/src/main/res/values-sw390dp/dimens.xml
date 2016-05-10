@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="mb_image_height">200dp</dimen>
+    <dimen name="warning_payment_tx">16sp</dimen>
+    <dimen name="payment_title">22sp</dimen>
+    <dimen name="payment_tx">20sp</dimen>
+    <!--Card fragment dimens-->
+    <dimen name="card_image_height">294dp</dimen>
+    <dimen name="card_title">24sp</dimen>
+    <dimen name="card_title_tx">20sp</dimen>
+
+</resources>

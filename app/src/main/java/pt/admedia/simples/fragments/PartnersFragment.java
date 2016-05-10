@@ -3,12 +3,10 @@ package pt.admedia.simples.fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -37,7 +35,6 @@ import pt.admedia.simples.api.PartnersAPI;
 import pt.admedia.simples.lib.GridSpacingItemDecoration;
 import pt.admedia.simples.lib.IsOnline;
 import pt.admedia.simples.lib.My_Answers;
-import pt.admedia.simples.lib.SimplesPrefs;
 import pt.admedia.simples.model.My_Realm;
 import pt.admedia.simples.model.PartnersEntity;
 import retrofit.Callback;
@@ -53,7 +50,6 @@ public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.
     private RecyclerView partners_list;
     private ProgressBar partnersPbar;
     private String filter;
-    private Spinner categories;
     private My_Realm my_realm;
     private boolean loadPositionZero;
     private String[] categoriesList;
@@ -80,13 +76,14 @@ public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.
         return inflater.inflate(R.layout.fragment_partners, container, false);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Answers initialization
         setAnswers();
 
-        categories = (Spinner) getActivity().findViewById(R.id.categories);
+        Spinner categories = (Spinner) getActivity().findViewById(R.id.categories);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         categories.setVisibility(View.VISIBLE);
         // Spinner reset
@@ -108,11 +105,12 @@ public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.
         categories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position > 0)
+                if (position > 0)
                     getSelectedLocalPartner(categoriesList[position]);
-                else if(loadPositionZero)
+                else if (loadPositionZero)
                     getAsyncLocalPartner();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -174,7 +172,7 @@ public class PartnersFragment extends Fragment implements MyRecyclerListAdapter.
             @Override
             public void failure(RetrofitError error) {
                 partnersPbar.setVisibility(View.GONE);
-                if(isAdded())
+                if(isAdded() && mContext != null)
                     Toast.makeText(mContext, mContext.getString(R.string.rc_4)
                                     + " " + mContext.getString(R.string.server_error),
                             Toast.LENGTH_SHORT).show();

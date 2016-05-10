@@ -16,7 +16,8 @@ import pt.admedia.simples.validator.AbstractValidator;
  */
 public class MobileValidator extends AbstractValidator
 {
-    final static String PATTERN = "[0-9]{9}";
+    final static String PATTERN = "^([9][6|1|3])([0-9]{7})+$";
+
     public MobileValidator(Context c, int messageRes)
     {
         super(c, messageRes);

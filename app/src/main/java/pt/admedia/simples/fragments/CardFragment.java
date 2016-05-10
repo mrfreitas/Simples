@@ -2,10 +2,8 @@ package pt.admedia.simples.fragments;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -17,15 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.Transformation;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.Resource;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.Target;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -42,35 +32,9 @@ import pt.admedia.simples.lib.SimplesPrefs;
 
 public class CardFragment extends Fragment {
 
-    private ImageView cardImage;
     private ProgressBar cardProgress;
     private String firstName, lastName, cardValDate;
     long cardNumber;
-    // Custom target for the picasso image loader
-    private SimpleTarget<Bitmap> target = new SimpleTarget<Bitmap>(){
-        @Override
-        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-            try
-            {
-                File f = new File(getActivity().getBaseContext().getCacheDir(), SimplesPrefs.CARD_NAME.toString());
-                if(!f.exists())
-                {
-                    f.createNewFile();
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    resource.compress(Bitmap.CompressFormat.PNG, 100, bos);
-                    byte[] bitmapdata = bos.toByteArray();
-
-                    FileOutputStream fos = new FileOutputStream(f);
-                    fos.write(bitmapdata);
-                    fos.flush();
-                    fos.close();
-                }
-                cardImage.setImageBitmap(BitmapFactory.decodeFile(f.getPath()));
-                cardProgress.setVisibility(View.GONE);
-            }
-            catch (IOException e) {}
-        }
-    };
 
     public CardFragment() {
         // Required empty public constructor
@@ -95,12 +59,13 @@ public class CardFragment extends Fragment {
 
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Answers initialization
         setAnswers();
-        cardImage = (ImageView) getActivity().findViewById(R.id.card_image);
+        ImageView cardImage = (ImageView) getActivity().findViewById(R.id.card_image);
         cardProgress = (ProgressBar) getActivity().findViewById(R.id.card_progress);
         TextView name_tv = (TextView) getActivity().findViewById(R.id.cardName);
         TextView cNumber_tv = (TextView) getActivity().findViewById(R.id.cardNumber);
@@ -148,6 +113,7 @@ public class CardFragment extends Fragment {
             File f = new File(getActivity().getBaseContext().getCacheDir(), SimplesPrefs.CARD_NAME.toString());
             if(!f.exists())
             {
+                //noinspection ResultOfMethodCallIgnored
                 f.createNewFile();
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 resource.compress(Bitmap.CompressFormat.PNG, 100, bos);
@@ -160,7 +126,7 @@ public class CardFragment extends Fragment {
             }
             cardProgress.setVisibility(View.GONE);
         }
-        catch (IOException e) {}
+        catch (IOException ignored) {}
 
     }
     @Override

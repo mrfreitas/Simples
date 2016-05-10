@@ -13,11 +13,13 @@
     <string name="prompt_male">Homem</string>
     <string name="prompt_address">Morada</string>
     <string name="prompt_postal_address">Código postal (XXXX-XXX)</string>
-    <string name="prompt_parish">Freguesia</string>
-    <string name="action_request_card">Registar</string>
+    <string name="prompt_town">Localidade</string>
+    <string name="action_request_card">Pedir cartão</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_sign_in">Login</string>
     <string name="authenticating">Autenticando!</string>
+    <string name="sair">Pressione voltar novamente para sair!</string>
+    <string name="value">%1$s EUR</string>
 
     <!-- Strings related to card -->
     <string name="p_name_title">Nome</string>
@@ -65,9 +67,12 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!--Strings for screen titles-->
+    <string name="login">Iniciar sessão</string>
     <string name="title_activity_login">Iniciar sessão</string>
     <string name="title_activity_main">Simples</string>
+    <string name="request_card">Pedir cartão</string>
     <string name="title_activity_request_card">Pedir cartão</string>
+    <string name="first_time">Simples</string>
     <string name="title_activity_first_time">Simples</string>
     <string name="title_activity_partner_detail"></string>
 
@@ -203,5 +208,12 @@
         <item>desporto</item>
         <item>casa-e-decoracao</item>
     </string-array>
+    <string name="title_activity_payment_data">Dados para pagamento</string>
+    <string name="warning_continue">Se já efetuou o pagamento, clique em continuar.</string>
+    <string name="warning_payment"><Data><![CDATA[<b>O pagamento deverá ser efetuado no prazo de 24 horas. Terminado este prazo, o seu pedido será anulado.</b>]]> </Data></string>
+    <string name="my_continue">Continuar</string>
+    <string name="entity">Entidade</string>
+    <string name="reference">Referência</string>
+    <string name="value_title">Valor</string>
 
 </resources>
